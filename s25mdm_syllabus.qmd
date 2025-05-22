@@ -1,0 +1,142 @@
+---
+title: 'PSQF 7375: Missing Data Methods Syllabus; Spring 2025'
+date: 'Version 3.0: 21 January 2025'
+output: pdf_document
+---
+
+*Note:* The online syllabus at the address provided above will always have the most current information.
+
+## Course Information
+
+|                          |                                                                                                                                                                         |
+|------------------------------------|------------------------------------|
+| Instructor:              | Jonathan Templin                                                                                                                                                        |
+| email:                   | jonathan-templin\@uiowa.edu                                                                                                                                             |
+| Course website:          | <https://jonathantemplin.github.io/MissingDataMethods2025/>                                                                                                             |
+| Course repo:             | <https://github.com/jonathantemplin/MissingDataMethods2025>                                                                                                             |
+| Course YouTube Playlist: | TBA                                                                                                                                                                     |
+| Office:                  | S300A Lindquist Center                                                                                                                                                  |
+| Office Phone:            | 319-335-6429                                                                                                                                                            |
+| Classroom:               | S108 LC                                                                                                                                                                 |
+| Course Meeting Time:     | W 12:30pm-3:20pm                                                                                                                                                        |
+| Course Office Hours:     | W 10:00am-12:00pm via Zoom at <https://uiowa.zoom.us/my/jonathantemplinuiowa>                                                                                           |
+| Syllabus:                | [https://jonathantemplin.github.io/MissingDataMethods2025/s25mdm_syllabus.html](https://jonathantemplin.github.io/MissingDataMethods2025/syllabus/s25mdm_syllabus.html) |
+
+### Course Objectives, Materials, and Prerequesites
+
+This course section explores missing data methods in applied statistics, data science, and psychometrics; emphasizing techniques such as multiple imputation, Bayesian methods, and maximum likelihood to handle and analyze incomplete datasets effectively.
+
+## Course Readings
+
+The course will follow the chapters of Applied Missing Data Analysis (2022, 2nd Edition) by Craig Enders. The University of Iowa Library has electronic access to the book at <https://ebookcentral-proquest-com.proxy.lib.uiowa.edu/lib/uiowa/detail.action?docID=7027149>. Additional readings will be posted our course ICON site.
+
+## Tentative Course Schedule
+
+| Week | Date   | Topic                                                       | Reading                                        |
+|------------------|------------------|------------------|--------------------|
+| 1    | 22 Jan | Introduction to Class/Major Types of Missing Data           | None                                           |
+| 2    | 29 Jan | Introduction to Missing Data                                | Chapter 1                                      |
+| 3    | 5 Feb  | Maximum Likelihood Estimation                               | Chapter 2                                      |
+| 4    | 12 Feb | Maximum Likelihood Estimation with Missing Data             | Chapter 3                                      |
+| 5    | 19 Feb | Bayesian Estimation                                         | Chapter 4                                      |
+| 6    | 26 Feb | Bayesian Estimation with Missing Data                       | Chapter 5                                      |
+| 7    | 5 Mar  | Bayesian Estimation for Categorical Variables               | Chapter 6                                      |
+| 8    | 12 Mar | Multiple Imputation                                         | Chapter 7                                      |
+| 9    | 19 Mar | Spring Break: No Class                                      | No Readings                                    |
+| 10   | 26 Mar | Multilevel Missing Data                                     | Chapter 8                                      |
+| 11   | 2 Apr  | Missing Not at Random Processes                             | Chapter 9                                      |
+| 12   | 9 Apr  | Special Topics and Applications                             | Chapter 10                                     |
+| 13   | 16 Apr | Guidance for Working with Missing Data                      | Chapter 11                                     |
+| 14   | 23 Apr | Missing Data in Psychometric Models: Latent Variable Scores | Mislevy et al. (1992)                          |
+| 15   | 30 Apr | No Class: AERA/NCME Conference                              |                                                |
+| 16   | 7 May  | Missing Data in Psychometric Models: Implications for CAT   | Doebler et al. (2013); Jewsbury et al. (2024); |
+
+## Additional Readings
+
+Mislevy, R. J., Beaton, A. E., Kaplan, B., & Sheehan, K. M. (1992). Estimating population characteristics from sparse matrix samples of item responses. Journal of Educational Measurement, 29(2), 133-161.
+
+Jewsbury, P. A., Lu, R., & van Rijn, P. W. (2024). A general framework for modeling missing data due to item selection with item response theory. Methodology, 20(3), 218-237.
+
+Doebler, A., Doebler, P., & Holling, H. (2013). Optimal and most exact confidence intervals for person parameters in item response theory models. Psychometrika, 78(1), 98-115.
+
+## Course Website/Technology
+
+ICON *will* be used for grades, submission of assignments, disseminating course readings, and course communications.
+
+ICON *will not* be used for lecture materials. Instead, we will use freely available commercial software for communication and dissemination of course materials. Course lecture slides, lecture examples, video files, assignments, and information are available on the website. Additionally, all course materials will be available using the course Git repository.
+
+All lectures will be archived on YouTube (my YouTube channel is https://jonathantemplin.com/YouTube).
+
+### Statistical Computing
+
+The course will use the R statistical package with the R Studio development suite along with a set of R packages (both Bayesian and Non-Bayesian). Additionally, we will use the JAGS and Stan open-source Bayesian estimation programs. R and R Studio work with JAGS and Stan by using a series of downloadable packages which will be used throughout the course.
+
+R, R Studio, and stan are available for free from the following websites: R: <https://www.r-project.org/> R Studio: [https://www.rstudio.com/](https://mc-stan.org/) Stan: <https://mc-stan.org/> JAGS: <https://mcmc-jags.sourceforge.io>
+
+The University of Iowa enables access for many of these programs through their research computing resources: R Studio Notebooks: https://notebooks.hpc.uiowa.edu/ High Performance Computing: https://hpc.uiowa.edu/
+
+Although this software is available at the University of Iowa, I ask that you install all versions on your local computer as campus resources can be difficult to use for many analyses.
+
+## Homework, Reading Assessments, and Course Project
+
+Student evaluation will be made based three components: (1) homework assignments (50% of course grade), (2) assigned reading assessments (20% of course grade), and (3) a final examination (30% of course grade).
+
+Mathematically, the grade percentage can be expressed as:
+
+$$GP = .5\times HP + .2 \times ARP + .3 \times FP, $$ Where:
+
+-   GP is the Grade Percentage
+-   HP is the Homework Percentage
+-   ARP is the book Assessment Percentage
+-   FP is the Final Examination Percentage
+
+### Homework Assignments
+
+There will be a set of homework assignments, the number to be determined. For each assignment, students will have a minimum of two weeks to complete the assignment. Homework assignments will weighted equally with respect to the 60%/ of the course grade accounted for by homework. The lowest homework percentage will be dropped (to allow for grace for late homework).
+
+Mathematically, the homework percentage can be expressed as:
+
+$$HP = \left[\frac{\left( \sum_{h=1}^H P_h \right)-\min_h P_h} {H-1}\right],$$ where $P_h$ is the percent correct on homework $h$, with $H$ total homeworks.
+
+In order to be able to provide the entire class with prompt feedback, late homework assignments will not be accepted. However, extensions may be granted as needed for extenuating circumstances (e.g., conferences, family obligations) if requested at least three weeks in advance of the due date. Additionally, late homework due to emergencies will be accepted with documentation of the circumstances of the emergency.
+
+All assignments must be completed in R, using R Markdown as a file format, and submitted via ICON. Although students are encouraged to work together on the concepts underlying homework, all answers must be from student’s own work (writing and syntax) and not be copied or paraphrased from anyone else’s answers. Grammar and writing will be assessed by each homework and will factor into the homework grade.
+
+### Assigned Reading Assessments
+
+Each week, students will take a short assessment in ICON with questions pertaining to the reading assigned that week. The purpose of the assigned reading assessment is to ensure reading materials are read prior to class being held. Questions will be graded correct/incorrect.
+
+### Verbal Final Examination
+
+As we live in the era of large language models, rather than a written project, students will be required to complete a verbal final examination. The verbal final examination will be a one-on-one meeting with the instructor. The verbal final examination will account for 30% of the course grade.
+
+The contents of the final will be the entirety of the course materials, with an emphasis on the readings and the homework assignments. The verbal final examination will be held during finals week (Wednesday, May 14th) via Zoom. A sign-up sheet for an examination time blocks will be posted on ICON.
+
+### Course Grading System
+
+| Point Total   | Letter Grade |
+|---------------|:-------------|
+| 100 and Above | A+           |
+| 99-93         | A            |
+| 92-90         | A-           |
+| 89-87         | B+           |
+| 86-83         | B            |
+| 82-80         | B-           |
+| 79-77         | C+           |
+| 76-73         | C            |
+| 72-70         | C-           |
+| 69-60         | D            |
+| Below 60      | F            |
+|               |              |
+
+## Use of Artificial Intelligence or Other Technology
+
+This course assumes that work submitted by students—all process work, drafts, low-stakes writing, final versions, and all other submissions—will be generated by the students themselves, working individually. This means that the following would be considered violations of academic integrity: a student has another person/entity do the writing of any substantive portion of an assignment for them, which includes hiring a person or a company to write essays and drafts and/or other assignments, research-based or otherwise, and using artificial intelligence affordances like ChatGPT.
+
+## University of Iowa Course Policies and Resources for Students
+
+-   Student Complaint Procedure: <https://education.uiowa.edu/faculty-and-staff-resources/student-complaint-procedure>
+
+-   College policy on student academic misconduct: <https://education.uiowa.edu/faculty-and-staff-resources/student-academic-misconduct>
+
+-   University policies <https://provost.uiowa.edu/student-course-policies>

@@ -1,0 +1,968 @@
+---
+title: "Multilevel Missing Data"
+author: "Lecture 9: April 30, 2025" 
+format: 
+  revealjs:
+    multiplex: false
+    footer: "[https://jonathantemplin.github.io/MissingDataMethods2025/](https://jonathantemplin.github.io/MissingDataMethods2025/)"
+    theme: ["pp.scss"]
+    slide-number: c/t
+    incremental: false
+---
+
+## Section 8.1: Chapter Overview
+
+This chapter focuses on handling missing data in **multilevel data sets**.
+
+---
+
+## What is Multilevel Data?
+
+* **Hierarchically Structured:** Observations are nested within higher-level organizational units
+* **Ubiquitous:** Found in many disciplines
+* **Nesting:** Can involve two or more levels (e.g., Level 1 nested in Level 2, or Level 1 in Level 2 in Level 3)
+
+---
+
+## Examples of Multilevel Data
+
+* Repeated measurements nested within **persons**
+* Students grouped in **classrooms** or **schools**
+* Romantic partners paired within **dyads**
+* Employees nested within **organizations**
+* Survey respondents grouped in **geographical regions**
+* Clients clustered within **therapists**
+* *Three-level example:* Repeated measurements nested within students, students nested in schools
+
+---
+
+## Data Analysis Focus
+
+* **Multilevel Regression Models:** Specifically models with random effects
+    * These are very common tools for analyzing hierarchical data
+* **Recommended Resources:**
+    * Gelman & Hill (2007)
+    * Hoffman (2015)
+    * Hox, Moerbeek, & Van de Schoot (2017)
+    * Raudenbush & Bryk (2002)
+    * Snijders & Bosker (2012)
+    * Verbeke & Molenberghs (2000)
+
+---
+
+## Missing Data Handling in Multilevel Models
+
+* **Recent Development:** Methods specifically for multilevel missing data are relatively new and important.
+* **Chapter Focus:**
+    * Bayesian Estimation
+    * Model-Based Imputation (often more adept than ML)
+    * Joint Model Imputation
+    * Fully Conditional Specification (FCS / MICE)
+    * Maximum Likelihood (ML)
+* **Core Idea:** Often involves MCMC estimating factored regressions (focal + supporting models) to create distributions for missing values. Imputations = Predictions + Noise (from a multilevel model)
+
+## Section 8.2: Random Intercept Regression Models
+
+
+
+---
+
+## Example: Math Problem-Solving Study
+
+* **Data:** Educational experiment data (from companion website)
+* **Structure:** 2-Level Hierarchy
+    * Level 1: Students ($n_j \approx 34$ per school)
+    * Level 2: Schools ($J=29$)
+* **Design:** Schools randomly assigned to experimental (new curriculum) or comparison (standard curriculum) condition
+* **Outcome (Y):** End-of-year math problem-solving assessment (IRT scores, 37-65)
+
+---
+
+## Key Feature: Multilevel Variation
+
+* Variation and covariation exist at **both levels**
+    * Student scores vary *within* schools
+    * School average scores vary *between* schools
+* **Intraclass Correlation (ICC):** Proportion of total variance at Level 2
+    * Example: ICC $\approx 0.26$ for problem-solving scores means ~26% of variance is between schools
+* **Predictors:** Level-1 predictors (like student math scores) can also have within- and between-group variation. Missing data methods need to preserve this.
+
+---
+
+## Random Intercept Model: Concept
+
+* **Definition:** A regression model where the intercept coefficient ($\beta_{0j}$) is allowed to vary randomly across Level-2 units (groups/clusters)
+* **Suitability:** Amenable to various missing data handling methods (agnostic imputation, ML)
+* **Example Predictors:**
+    * Level 1: Standardized math scores (`STANMATH`)
+    * Level 2: Teacher experience (`TEACHEXP`)
+
+---
+
+## Level-1 Model (Within-Cluster)
+
+Describes variation *among students within the same school*
+
+$$
+Y_{ij} = \beta_{0j} + \beta_{1}X_{1ij} + \epsilon_{ij}
+$$
+
+* $Y_{ij}$: Outcome for student $i$ in school $j$
+* $X_{1ij}$: Level-1 predictor value for student $i$ in school $j$
+* $\beta_{0j}$: **Random intercept** for school $j$ (Varies across schools)
+* $\beta_{1}$: Common (fixed) slope for $X_1$ (Same across schools)
+* $\epsilon_{ij}$: Level-1 residual (within-school error) for student $i$
+    * Assumed $\epsilon_{ij} \sim N(0, \sigma_{\epsilon}^2)$
+
+
+---
+
+## Level-2 Model (Between-Cluster)
+
+Models the variation in the school-specific intercepts ($\beta_{0j}$).
+
+$$
+\beta_{0j} = \beta_{0} + \beta_{2}X_{2j} + b_{0j}
+$$
+
+* $\beta_{0j}$: The random intercept (outcome in this model)
+* $\beta_{0}$: Grand mean intercept (average intercept across all schools)
+* $X_{2j}$: Level-2 predictor for school $j$
+* $\beta_{2}$: Effect of Level-2 predictor $X_2$ on the intercept
+* $b_{0j}$: Level-2 residual (random effect) for school $j$. Captures unexplained variation in intercepts.
+    * Assumed $b_{0j} \sim N(0, \sigma_{b_0}^2)$
+
+---
+
+## Combined Model (Single Equation)
+
+Substitute the Level-2 equation into the Level-1 equation:
+
+$$
+Y_{ij} = (\beta_{0} + b_{0j}) + \beta_{1}X_{1ij} + \beta_{2}X_{2j} + \epsilon_{ij}
+$$
+
+Alternatively:
+
+$$
+Y_{ij} = E(Y_{ij}|X_{1ij}, X_{2j}) + \epsilon_{ij}
+$$
+
+* Assumes $Y_{ij} \sim N(E(Y_{ij}|X_{1ij}, X_{2j}), \sigma_{\epsilon}^2)$
+* Interpretation: Outcome scores $Y_{ij}$ are normally distributed around the predicted values derived from their specific school's regression line
+
+
+## Factored Regression Specification
+
+* **Concept:** Expresses the joint distribution of all variables ($Y, X_1, X_2$) as a product of simpler conditional distributions using the probability chain rule. Essential for handling missing predictors
+* **Two Main Approaches:**
+    1. Sequential Specification
+    2. Partially Factored Specification
+
+---
+
+## 1. Sequential Specification
+
+Factorizes the joint distribution into a product of univariate conditional distributions:
+
+$$
+f(Y, X_1, X_2) = f(Y | X_1, X_2) \times f(X_1 | X_2) \times f(X_2)
+$$
+
+* $f(Y | X_1, X_2)$: The focal analysis model 
+* $f(X_1 | X_2)$: A model for the Level-1 predictor, conditional on Level-2 predictor(s)
+* $f(X_2)$: A model for the Level-2 predictor
+* **Important Ordering:** Lower-level variables condition on higher-level variables
+
+---
+
+## Sequential: Predictor Models
+
+* **Level-1 Predictor Model:** A random intercept model for $X_1$
+    $$ X_{1ij} = (\gamma_{01} + g_{01j}) + \gamma_{11}X_{2j} + r_{1ij} $$
+    * $\gamma$: Regression coefficients
+    * $g_{01j}$: Random intercept residual for $X_1 \sim N(0, \sigma_{g_{01}}^2)$. Captures between-school variation in average $X_1$
+    * $r_{1ij}$: Within-cluster residual for $X_1 \sim N(0, \sigma_{r_1}^2)$. Captures within-school variation in $X_1$
+
+* **Level-2 Predictor Model:** An "empty" single-level model for $X_2$ (should be corresponding level-2 mean for level-1 variable)
+    $$ X_{2j} = \gamma_{02} + r_{2j} $$
+    * $\gamma_{02}$: Grand mean of $X_2$
+    * $r_{2j}$: Between-cluster residual for $X_2 \sim N(0, \sigma_{r_2}^2)$
+
+---
+
+## 2. Partially Factored Specification
+
+Factorizes into the focal model and a joint multivariate distribution for predictors:
+
+$$
+f(Y, X_1, X_2) = f(Y | X_1, X_2) \times f(X_1, X_2)
+$$
+
+* $f(X_1, X_2)$: A two-part (Level-1 and Level-2) multivariate normal distribution
+* **Decomposition:** Splits L1 predictor $X_1$ into components:
+    $$ X_{1ij} = \underbrace{\mu_{1}}_{\text{Grand Mean}} + \underbrace{(\mu_{1j} - \mu_{1})}_{\text{Between Cluster Dev.}} + \underbrace{(X_{1ij} - \mu_{1j})}_{\text{Within Cluster Dev.}} $$
+    * $\mu_{1j}$ is the **latent** group mean for cluster $j$
+
+---
+
+## Partially Factored: Predictor Models
+
+* **Within-Cluster Model for $X_1$:** $X_1$ scores as deviations around "latent" (unestimated) group means
+    $$ X_{1ij} = \mu_{1j} + r_{1ij(W)} \quad \text{where} \quad X_{1ij} \sim N(\mu_{1j}, \sigma_{r_{1(W)}}^2) $$
+    * $r_{1ij(W)}$: Within-cluster residual
+
+* **Between-Cluster Model for $(\mu_{1j}, X_{2j})$:** Latent means ($\mu_{1j}$) and L2 scores ($X_{2j}$) are bivariate normal.
+    $$ \begin{pmatrix} \mu_{1j} \\ X_{2j} \end{pmatrix} = \begin{pmatrix} \mu_{1} \\ \mu_{2} \end{pmatrix} + \begin{pmatrix} r_{1j(B)} \\ r_{2j(B)} \end{pmatrix} \quad \text{where} \quad \begin{pmatrix} r_{1j(B)} \\ r_{2j(B)} \end{pmatrix} \sim N_2 \left( \mathbf{0}, \Sigma_{(B)} \right) $$
+    * $\Sigma_{(B)}$ is the $2 \times 2$ between-cluster covariance matrix
+* **Note:** Can also be parameterized via round-robin regressions. Partially factored is ideal for models with centered predictors
+
+---
+
+## Distribution of Missing Values: Outcome $Y$
+
+* Defined solely by the **focal analysis model** (Combined Model)
+* The posterior predictive distribution for $Y_{ij(mis)}$ is:
+    $$ Y_{ij(mis)} \sim N(E(Y_{ij}|X_{1ij}, X_{2j}), \sigma_{\epsilon}^2) $$
+* **Imputation:** Draw a random value from this normal distribution
+    * The mean $E(Y_{ij}|...)$ depends on the specific cluster $j$'s intercept ($\beta_{0j}$)
+    * The variance $\sigma_{\epsilon}^2$ is the within-cluster residual variance
+
+
+---
+
+## Distribution of Missing Values: Predictor $X_1$
+
+* Drawn from the conditional distribution $f(X_1 | Y, X_2)$
+* This distribution is proportional to the product of the focal model and the predictor model for $X_1$:
+    $$ f(X_1 | Y, X_2) \propto f(Y | X_1, X_2) \times f(X_1 | X_2) $$ 
+* Combining the kernels yields a normal distribution:
+    $$ f(X_{1ij(mis)} | Y_{ij}, X_{2j}) = N(E(X_{1ij}|...), Var(X_{1ij}|...)) $$
+* **Mean and Variance:** Depend on parameters from *both* the focal model ($\beta$'s, $\sigma_{\epsilon}^2$) and the predictor model ($\mu_{1j}$, $\sigma_{r_{1(W)}}^2$). Includes random effects ($\beta_{0j}, \mu_{1j}$)
+
+---
+
+## Distribution of Missing Values: Predictor $X_2$
+
+* Drawn from the conditional distribution $f(X_2 | Y, X_1)$
+* Using the partially factored specification:
+    $$ f(X_2 | Y, X_1) \propto f(Y | X_1, X_2) \times f(X_2 | X_1) $$
+* $f(Y | X_1, X_2)$ is from the focal model; $f(X_2 | X_1)$ is from the between-cluster predictor model 
+* **Important:** $X_2$ is constant within cluster $j$. The focal model's contribution is repeated $n_j$ times:
+    $$ f(X_{2j(mis)}|...) \propto \left[ \prod_{i=1}^{n_j} N(E(Y_{ij}|...), \sigma_{\epsilon}^2) \right] \times N(E(X_{2j}|\mu_{1j}), \sigma_{r_{2(B)}}^2) $$
+* **Imputation:** Often requires sampling methods like Metropolis-Hastings due to complexity
+
+
+## MCMC Algorithm: Overview
+
+* **Posterior Distribution:** Complex function describing joint probability of parameters, random effects, latent means, and missing values given observed data
+* **Core Logic:** Extends standard Bayesian MCMC
+    * Estimate one unknown quantity at a time (parameter, latent variable, missing value)
+    * Condition on the current values of all other quantities
+* Full conditional distributions are available in the literature
+
+---
+
+## MCMC Algorithm: Generic Recipe
+
+1. Assign starting values (parameters, random effects, missing values)
+2. **Do for $t=1$ to T iterations:**
+    * Estimate focal model's parameters, given everything else
+    * Estimate focal model's random effects, given everything else
+    * Estimate each predictor model's parameters, given everything else
+    * Estimate each predictor model's random effects, given everything else
+    * Impute dependent variable ($Y_{mis}$) given focal model parameters
+    * Impute each predictor ($X_{mis}$) given focal and supporting models
+3. **Repeat*
+
+---
+
+## Analysis Example: Setup (Math Study)
+
+* **Model:** Random intercept regression
+    $$ PROBSOLVE_{ij} = (\beta_{0} + b_{0j}) + \beta_{1}PRETEST_{ij} + \beta_{2}STANMATH_{ij} $$
+    $$ + \beta_{3}FRLUNCH_{ij} + \beta_{4}TEACHEXP_{j} + \beta_{5}CONDITION_{j} + \epsilon_{ij} $$
+* **Predictors:**
+    * L1: PRETEST (complete), STANMATH (7.3% missing), FRLUNCH (binary, 4.7% missing)
+    * L2: TEACHEXP (10.3% missing), CONDITION (complete)
+* **Outcome:** PROBSOLVE (20.5% missing)
+* **Goal:** Estimate treatment effect ($\beta_5$) controlling for covariates
+
+NOTE: Example analysis is likely incorrectly specified (no level-2 variables from corresponding level-1 variables likely means conflated effects)
+
+---
+
+## Analysis Example: Factored Regression Options
+
+* **Sequential:** Product of univariate distributions. Order: Incomplete L1, Complete L1, Incomplete L2, Complete L2. Use latent response for binary predictors (FRLUNCH).
+* **Partially Factored:** Multivariate normal for predictors (PRETEST, STANMATH, FRLUNCH*, TEACHEXP, CONDITION*)
+    * Level 1 predictors decomposed 
+    * Within-cluster model: Correlated deviations around latent group means ($\mu_j$)
+    * Between-cluster model: Latent group means + L2 vars are multivariate normal
+    * Preferred here due to centering
+
+
+## Random Coefficient Models
+
+
+## Example: Daily Diary Study (Health Psych)
+
+* **Data:** $J=132$ participants with chronic pain
+* **Structure:** 2-Level Hierarchy (Repeated Measures)
+    * Level 1: Daily assessments (up to $n_j=21$ days: mood, sleep, pain)
+    * Level 2: Persons
+* **Variables:** L1 (daily), L2 (person-level demographics, psych variables like pain acceptance, catastrophizing)
+* **ICC Example:** Positive Affect ICC $\approx 0.63$. High between-person variation typical for repeated measures
+
+---
+
+## Random Coefficient (Slope) Model: Concept
+
+* **Definition:** A multilevel regression where the influence (slope) of one or more Level-1 predictors varies across Level-2 units
+* **Example:**
+    * L1: Daily `PAIN` ($X_1$) predicting daily `POSAFFECT` ($Y$)
+    * L2: Person-average `PAIN` ($\mu_{1j}$) and `PAINACCEPT` ($X_2$) predicting average `POSAFFECT`
+    * *Key:* The effect of daily `PAIN` on `POSAFFECT` can differ from person to person
+
+---
+
+## Level-1 Model (Within-Person)
+
+Describes daily variation *within the same person*.
+
+$$
+Y_{ij} = \beta_{0j} + \beta_{1j}(X_{1ij} - \mu_{1j}) + \epsilon_{ij}
+$$
+
+* $Y_{ij}$: Positive affect for person $j$ on day $i$
+* $X_{1ij}$: Pain rating for person $j$ on day $i$
+* $\beta_{0j}$: **Random intercept** for person $j$ (person $j$'s average affect)
+* $\beta_{1j}$: **Random slope** for person $j$ (person $j$'s daily pain-affect association)
+* $\mu_{1j}$: **Latent** person-mean for $X_1$ (pain). $X_1$ is group-mean centered
+* $\epsilon_{ij}$: Level-1 residual ($\sim N(0, \sigma_{\epsilon}^2)$)
+
+Interpretation: Regression lines vary in intercept *and* slope across persons
+
+---
+
+## Level-2 Model (Between-Person)
+
+Models variation in person-specific intercepts ($\beta_{0j}$) and slopes ($\beta_{1j}$)
+
+$$
+\beta_{0j} = \beta_{0} + \beta_{2}(\mu_{1j} - \mu_{1}) + \beta_{3}(X_{2j} - \mu_{2}) + b_{0j}
+$$
+$$
+\beta_{1j} = \beta_{1} + b_{1j}
+$$
+
+* $\beta_0, \beta_1$: Grand mean intercept & slope
+* $\mu_{1j}$: Latent person-mean pain (predictor for $\beta_{0j}$)
+* $X_{2j}$: Pain acceptance (predictor for $\beta_{0j}$)
+* $\mu_1, \mu_2$: Grand means for predictors (used for centering)
+* $\beta_2, \beta_3$: Fixed effects of L2 predictors on intercept
+* $b_{0j}, b_{1j}$: L2 random effects (residuals for intercept & slope). Assumed $\begin{pmatrix} b_{0j} \\ b_{1j} \end{pmatrix} \sim N_2(\mathbf{0}, \Sigma_b)$
+
+---
+
+## Combined Model (Reduced Form)
+
+Substitute L2 into L1:
+
+$$
+Y_{ij} = \underbrace{(\beta_{0} + \beta_{2}(\mu_{1j} - \mu_{1}) + \beta_{3}(X_{2j} - \mu_{2}) + b_{0j})}_{\beta_{0j}} + \underbrace{(\beta_{1} + b_{1j})}_{\beta_{1j}}(X_{1ij} - \mu_{1j}) + \epsilon_{ij}
+$$
+
+Alternatively: $Y_{ij} = E(Y_{ij}|X_{1ij}, X_{2j}) + \epsilon_{ij}$ where $Y_{ij} \sim N(E(Y_{ij}|...), \sigma_{\epsilon}^2)$
+
+* This normal distribution defines $P(Y_{ij(mis)}|...)$
+
+---
+
+## Missing Data Challenge: Nonlinearity
+
+* Random coefficient models feature a product term: $X_{1ij} \times \beta_{1j}$
+    * Level-1 predictor ($X_1$) multiplied by a Level-2 latent variable/random effect ($\beta_{1j}$)
+* **Problem:** Handling missingness when the L1 predictor ($X_1$) involved in the random slope is incomplete is challenging
+    * Some methods (e.g., current ML estimators) are prone to substantial bias
+* **Solution:** Bayesian estimation / Model-based MI using factored regression is effective
+
+---
+
+## Factored Regression Specification
+
+* **Partially Factored:** Ideal due to centering
+    $$ f(Y | X_1, X_2) \times f(X_1, X_2) $$
+* The predictor model $f(X_1, X_2)$ is specified as before
+    * The fact that the *focal* model $f(Y|...)$ has a random slope doesn't change the *form* of the predictor model specification
+
+---
+
+## Distribution of Missing Values: Outcome $Y$
+
+* Defined solely by the **focal analysis model**
+* Posterior predictive distribution for $Y_{ij(mis)}$:
+    $$ Y_{ij(mis)} \sim N(E(Y_{ij}|X_{1ij}, X_{2j}), \sigma_{\epsilon}^2) $$
+* **Imputation:** Draw from this normal distribution
+    * Mean $E(Y_{ij}|...)$ incorporates person $j$'s specific intercept ($\beta_{0j}$) AND slope ($\beta_{1j}$)
+
+
+---
+
+## Distribution of Missing Values: Predictor $X_1$
+
+* Drawn from conditional distribution $f(X_1 | Y, X_2) \propto f(Y | X_1, X_2) \times f(X_1 | X_2)$
+* Combining kernels yields a normal distribution:
+    $$ f(X_{1ij(mis)} | Y_{ij}, X_{2j}) = N(E(X_{1ij}|...), Var(X_{1ij}|...)) $$
+* $E(X_{1ij}|...) = Var(X_{1ij}|...) \times \left( \frac{\mu_{1j}}{\sigma_{r_{1(W)}}^2} + \frac{\beta_{1j}(Y_{ij} - (\beta_{0j} + \beta_{2}(\mu_{1j}-\mu_1) + ...))}{\sigma_{\epsilon}^2} \right)$
+* $Var(X_{1ij}|...) = \left( \frac{1}{\sigma_{r_{1(W)}}^2} + \frac{\beta_{1j}^2}{\sigma_{\epsilon}^2} \right)^{-1}$
+
+---
+
+## Key Issue: Heteroscedasticity in $X_1$ Imputations
+
+* Look at the variance term for $X_{1ij(mis)}$:
+    $$ Var(X_{1ij}|Y_{ij}, X_{2j}) = \left( \frac{1}{\sigma_{r_{1(W)}}^2} + \frac{\boldsymbol{\beta_{1j}^2}}{\sigma_{\epsilon}^2} \right)^{-1} $$
+* The variance (spread) of the imputation distribution depends on the **person-specific random slope squared ($\beta_{1j}^2$)**
+* **Implication:** Imputations for $X_1$ should have different variances for different people. This is **heteroscedastic**
+* **Problem:** Methods assuming multivariate normality for imputation (e.g., standard FCS, current ML in SEM) cannot capture this heteroscedasticity easily and are prone to bias (especially underestimating slope variance)
+
+---
+
+## Analysis Example: Setup (Diary Study)
+
+* **Model:** Random coefficient model for POSAFFECT
+    $$ POSAFFECT_{ij} = \beta_{0j} + \beta_{1j}(PAIN_{ij} - \mu_{1j}) + \beta_{2}(SLEEP_{ij} - \mu_{2}) $$
+    $$ + \beta_{3}(\mu_{1j} - \mu_{1}) + \beta_{4}(PAINACCEPT_{j} - \mu_{2}) + \beta_{5}FEMALE_{j} + \epsilon_{ij} $$
+* **Predictors:**
+    * L1: PAIN (random slope, latent group-mean centered), SLEEP (fixed slope, grand-mean centered)
+    * L2: Mean PAIN ($\mu_{1j}$), PAINACCEPT, FEMALE (binary)
+* **Factored Regression:** Partially factored, includes SLEEP, PAINACCEPT, FEMALE* in predictor model $f(...)$
+
+
+## Section 8.4: Multilevel Interaction Effects
+
+
+
+---
+
+## Example: Employee Empowerment Study
+
+* **Data:** $N=630$ employees from $J=105$ workgroups/teams ($n_j=6$)
+* **Structure:** 2-Level Hierarchy
+    * Level 1: Employees
+    * Level 2: Workgroups/Teams
+* **Outcome:** Employee Empowerment ($Y$). ICC $\approx 0.11$
+* **Variables:** LMX (Leader-Member Exchange), Gender (MALE), Team Cohesion, Team Leadership Climate
+
+---
+
+## Cross-Level Interaction: Concept
+
+* **Definition:** The influence (slope) of a Level-1 predictor ($X_1$) on $Y$ is moderated by a Level-2 predictor ($X_2$)
+* Often involves random slopes for $X_1$, as the interaction term helps explain *why* slopes vary across groups
+* **Example:**
+    * L1 Predictor: LMX (within-team relationship quality)
+    * L2 Moderator: CLIMATE (team leadership climate)
+    * Interaction: Does the LMX-Empowerment relationship depend on team Climate?
+
+---
+
+## Model Specification
+
+$$
+Y_{ij} = \beta_{0j} + \beta_{1j}(X_{1ij} - \mu_{1j}) + \beta_{2}(X_{2ij}^* - \mu_{2j}) + \beta_{3}(X_{3j} - \mu_{3})
+$$
+$$
++ \beta_{4}(X_{4j} - \mu_{4}) + \boldsymbol{\beta_{5}(X_{1ij} - \mu_{1j})(X_{4j} - \mu_{4})} + \epsilon_{ij}
+$$
+
+* $Y_{ij}$: Empowerment
+* $X_{1ij}$: LMX (L1 predictor, random slope $\beta_{1j}$, latent group-mean centered)
+* $X_{2ij}^*$: MALE (L1 covariate, latent group-mean centered)
+* $X_{3j}$: COHESION (L2 covariate, grand-mean centered)
+* $X_{4j}$: CLIMATE (L2 moderator, grand-mean centered)
+* $\beta_5$: **Cross-level interaction coefficient**
+
+---
+
+## Factored Regression Specification
+
+* **Partially Factored:** Preferred due to latent mean centering
+    $$ f(Y | Xs, Interaction) \times f(X_1, X_2^*, X_3, X_4) $$
+* **Predictor Model $f(...)$:**
+    * L1 vars ($X_1, X_2^*$) decomposed into within/between components
+    * **Within-Cluster:** Models $(X_{1ij}, X_{2ij}^*)$ around latent group means $(\mu_{1j}, \mu_{2j})$ using $\Sigma_{(W)}$. $X_2^*$ is latent response for MALE
+    * **Between-Cluster:** Models $(\mu_{1j}, \mu_{2j}, X_{3j}, X_{4j})$ around grand means using $\Sigma_{(B)}$
+
+---
+
+## Distribution of Missing Values
+
+* **Similar to Random Coefficient Model:**
+    * Missing $Y$: Drawn from focal model, involves $\beta_{0j}, \beta_{1j}$
+    * Missing Predictors (e.g., $X_1$ = LMX):
+        * Conditional distribution depends on focal and predictor models
+        * **Heteroscedasticity:** Variance depends on random slope ($\beta_{1j}^2$) and interaction term involving $\beta_5$
+        * Requires methods that handle this (Bayesian/Model-Based MI). Metropolis-Hastings useful
+
+---
+
+
+## Three-Level Models
+
+---
+
+## Example: Educational Study Revisited (3 Levels)
+
+* **Data:** Cluster-randomized trial from Sec 8.2, but now using longitudinal data
+* **Structure:** 3-Level Hierarchy
+    * Level 1: Measurement Occasions ($t=1...7$, monthly)
+    * Level 2: Students ($i$)
+    * Level 3: Schools ($j$)
+* **Outcome:** Problem Solving score at each occasion ($PROBSOLVE_{tij}$)
+* **Missing Data:** Increased over time (~20% by final wave). Planned missingness in control group
+
+---
+
+## Longitudinal Growth Curve Model
+
+* **Concept:** Type of MLM where repeated measures are modeled as a function of time
+* **Time Predictor (`MONTH`):** Codes passage of time (L1 predictor)
+    * Example coding: Relative to final assessment ($MONTH = -6, -5, ..., 0$). Intercept is end-of-year score
+* **Time Variation:** `MONTH` only varies within-student (L1). Constant across students and schools (No L2 or L3 variance)
+
+---
+
+## Level-1 Model (Within-Student)
+
+Models individual change trajectories.
+
+$$
+PROBSOLVE_{tij} = \beta_{0ij} + \beta_{1ij}(MONTH_{tij}) + \epsilon_{tij}
+$$
+
+* $\beta_{0ij}$: Student $i$'s expected score at MONTH=0 (end-of-year)
+* $\beta_{1ij}$: Student $i$'s linear rate of change per month
+* Both $\beta_{0ij}$ and $\beta_{1ij}$ are random effects varying across students (L2) and schools (L3)
+* $\epsilon_{tij}$: Time-specific residual ($\sim N(0, \sigma_{\epsilon}^2)$)
+
+---
+
+## Level-2 Model (Between-Student)
+
+Models student-level variation in intercepts ($\beta_{0ij}$) and slopes ($\beta_{1ij}$)
+
+$$
+\beta_{0ij} = \beta_{0j} + \beta_{2}(STANMATH_{ij} - \mu_{2}) + \beta_{3}(FRLUNCH_{ij}^* - \mu_{3}) + b_{0ij}
+$$
+$$
+\beta_{1ij} = \beta_{1j} + b_{1ij}
+$$
+
+* $\beta_{0j}, \beta_{1j}$: School $j$'s average intercept & slope
+* $STANMATH_{ij}, FRLUNCH_{ij}^*$: Student-level (L2) covariates predicting intercept (grand-mean centered)
+* $b_{0ij}, b_{1ij}$: Student-level random effects (deviations from school means). $\sim N_2(\mathbf{0}, \Sigma_{b(L2)})$
+
+---
+
+## Level-3 Model (Between-School)
+
+Models school-level variation in intercepts ($\beta_{0j}$) and slopes ($\beta_{1j}$)
+
+$$
+\beta_{0j} = \beta_{0} + \beta_{4}(TEACHEXP_{j} - \mu_{4}) + \beta_{5}(CONDITION_{j}) + b_{0j}
+$$
+$$
+\beta_{1j} = \beta_{1} + \beta_{6}(CONDITION_{j}) + b_{1j}
+$$
+
+* $\beta_0, \beta_1$: Grand mean intercept & slope (for control group, CONDITION=0)
+* $TEACHEXP_j, CONDITION_j$: School-level (L3) covariates
+* $\beta_5$: Intercept difference for intervention group (at MONTH=0)
+* $\beta_6$: Slope difference for intervention group (Treatment $\times$ Time interaction)
+* $b_{0j}, b_{1j}$: School-level random effects. $\sim N_2(\mathbf{0}, \Sigma_{b(L3)})$
+
+---
+
+## Combined Model (Reduced Form)
+
+$$
+Y_{tij} = (\beta_{0} + b_{0ij} + b_{0j}) + (\beta_{1} + b_{1ij} + b_{1j})MONTH_{tij} + \beta_{2}(X_{2ij} - \mu_{2})
+$$
+$$
++ \beta_{3}(X_{3ij}^* - \mu_{3}) + \beta_{4}(X_{4j} - \mu_{4}) + \beta_{5}X_{5j} + \boldsymbol{\beta_{6}MONTH_{tij}X_{5j}} + \epsilon_{tij}
+$$
+
+* $Y_{tij} \sim N(E(Y_{tij}|...), \sigma_{\epsilon}^2)$. Defines distribution for missing $Y$
+* Key effects: $\beta_5$ (main effect of Condition at end-of-year), $\beta_6$ (Condition $\times$ Month interaction)
+
+---
+
+## Factored Regression Specification 
+
+* **Partially Factored:** $f(Y | Xs) \times f(Xs)$
+* **Decomposition:** L1 predictors decomposed into L1(within-L2), L2(within-L3), and L3 components
+    $$ X_{1tij} = \mu_1 + (\mu_{1j}-\mu_1) + (\mu_{1ij}-\mu_{1j}) + (X_{1tij}-\mu_{1ij}) $$
+    * (Note: This formula is conceptual; specific models depend on variance components)
+
+---
+
+## Factored Regression: Predictor Models
+
+* **MONTH Predictor:** Only L1 variation. Modeled as deviation from grand mean. No L2/L3 random effects needed if complete
+    $$ MONTH_{tij} = \mu_{1} + r_{1tij(W)} $$
+* **Level-2 Predictor Model:** Models L2 vars (STANMATH, FRLUNCH*) around L3 latent means ($\mu_{2j}, \mu_{3j}$) using $\Sigma_{(L2)}$
+    $$ X_{ij(L2)} \sim N_2(\boldsymbol{\mu}_j, \Sigma_{(L2)}) $$
+* **Level-3 Predictor Model:** Models L3 latent means ($\mu_{2j}, \mu_{3j}$) + L3 vars (TEACHEXP, CONDITION*) around grand means using $\Sigma_{(L3)}$
+    $$ X_{j(L3)} \sim N_4(\boldsymbol{\mu}, \Sigma_{(L3)}) $$
+
+
+
+##  Multiple Imputation Strategies
+
+
+
+---
+
+## Recap: Agnostic vs. Model-Based MI
+
+* **Agnostic Imputation:** Imputation model differs from analysis model (e.g., Joint Modeling, FCS)
+    * Multilevel extensions exist
+    * Generally suitable for **random intercept** models
+* **Model-Based Imputation:** Imputation model is tailored to (or is the same as) the analysis model (e.g., from Bayesian estimation)
+    * Essential for models with **random coefficients, interactions, or other nonlinearities** to avoid bias
+
+---
+
+## Caution: Single-Level MI on Multilevel Data
+
+* Applying standard (single-level) JM or FCS to multilevel data is **problematic**
+* **Why?** These methods ignore the data hierarchy (nesting)
+    * They produce imputed values with **no between-cluster variation**
+    * Leads to **biased estimates** (e.g., attenuated L2 effects, incorrect SEs)
+* Use multilevel versions of JM/FCS or model-based approaches instead
+
+---
+
+## Fixed Effect Imputation: Concept
+
+* An alternative strategy in some situations
+* **Method:**
+    1. Create dummy variables ($D_k$) for each Level-2 group ($k=1...J$)
+    2. Include these dummy variables as predictors in a **single-level** imputation model
+    3. Effectively treats group membership as a fixed effect during imputation
+
+---
+
+## Fixed Effect Imputation: When to Consider?
+
+* May be useful when:
+    * The number of clusters ($J$) is very small (makes MLM estimation hard)
+    * Level-2 groups are not considered a random sample from a larger population
+    * Between-cluster differences are viewed as nuisance variation to be controlled, not phenomena of interest
+
+---
+
+## Fixed Effect Imputation: Model 
+
+Example for imputing outcome $Y$ in a random intercept context:
+
+$$
+Y_{ij} = \sum_{k=1}^{J} \gamma_{k} D_{kj} + \gamma_{J+1} X_{1ij} + \epsilon_{ij}
+$$
+
+* $D_{kj}=1$ if unit $i$ is in group $k$, 0 otherwise
+* $\gamma_k$ is the estimated intercept for group $k$
+* Uses absolute coding (all $J$ dummies, no overall intercept $\beta_0$)
+* **Note:** Excludes L2 predictors (e.g., $X_{2j}$) because the dummy codes account for all between-group variance in $Y$
+
+---
+
+## Fixed Effect Imputation: Limitations
+
+* Computationally simple
+* **Potential Biases:**
+    * Can overcompensate for group differences, **exaggerating between-group variation** (Lüdtke et al., 2017). Bias worse with low ICC or small $n_j$.
+    * May produce **positively biased standard errors** and inaccurate confidence intervals (Andridge, 2011; van Buuren, 2011)
+* **Practical Limitation:** Difficult to extend beyond random intercept models. Preserving random slopes would require many product terms ($D_{kj} \times X_{1ij}$)
+
+
+
+
+## Joint Model (JM) Imputation
+
+---
+
+## JM Imputation: Overview
+
+* **Framework:** Uses a multivariate normal distribution for continuous & latent response variables, decomposed into within- & between-cluster parts
+* **Approach:** Often uses an "empty" multivariate model (all variables as outcomes) for imputation
+* **Handles:** Missing data at L1/L2, categorical variables (via latent response)
+* **Standard JM Limitation:** Assumes common within-cluster covariance ($\Sigma_{(W)}$) across groups. Suitable for **random intercept** models, but biased for random slope models
+
+---
+
+## JM Model: Within-Cluster
+
+Models L1 scores as correlated deviations around latent group means $\boldsymbol{\mu}_j$
+
+$$
+\mathbf{Y}_{ij(W)} = \begin{pmatrix} PROBSOLVE_{ij} \\ PRETEST_{ij} \\ STANMATH_{ij} \\ FRLUNCH_{ij}^* \end{pmatrix} = \boldsymbol{\mu}_j + \mathbf{r}_{ij(W)}
+$$
+
+* Assumes $\mathbf{Y}_{ij(W)} \sim N_4(\boldsymbol{\mu}_j, \boldsymbol{\Sigma_{(W)}})$
+* $\boldsymbol{\Sigma_{(W)}}$ is the **common** within-cluster covariance matrix
+* $FRLUNCH^*$ is latent response variable (variance fixed to 1)
+* Defines posterior predictive distribution for L1 missing values
+
+---
+
+## JM Model: Between-Cluster
+
+Models latent group means ($\boldsymbol{\mu}_j$) and L2 variables
+
+$$
+\mathbf{Y}_{j(B)} = \begin{pmatrix} \mu_{1j} \\ \mu_{2j} \\ \mu_{3j} \\ \mu_{4j} \\ TEACHEXP_j \\ CONDITION_j^* \end{pmatrix} = \boldsymbol{\mu} + \mathbf{r}_{j(B)}
+$$
+
+* Assumes $\mathbf{Y}_{j(B)} \sim N_6(\boldsymbol{\mu}, \boldsymbol{\Sigma_{(B)}})$
+* $\boldsymbol{\Sigma_{(B)}}$ is the between-cluster covariance matrix
+* $CONDITION^*$ is latent response variable (variance fixed to 1)
+* Defines posterior predictive distribution for L2 missing values & latent means
+
+---
+
+## JM MCMC Algorithm
+
+Generates imputations using Gibbs sampling:
+
+1.  **Initialize:** Parameters ($\boldsymbol{\mu}, \Sigma_{(W)}, \Sigma_{(B)}$), latent means ($\boldsymbol{\mu}_j$), missing values
+2.  **Iterate (t=1...T):**
+    * Estimate grand means $\boldsymbol{\mu}$
+    * Estimate latent group means $\boldsymbol{\mu}_j$
+    * Estimate between-cluster covariance $\boldsymbol{\Sigma_{(B)}}$
+    * Estimate within-cluster covariance $\boldsymbol{\Sigma_{(W)}}$
+    * Impute missing values (using conditional MVN distributions derived from current parameters)
+3.  **Repeat** for M parallel chains or burn-in/thinning
+
+---
+
+
+## JM Extension: Random Within-Cluster Covariances
+
+* **Motivation:** Standard JM assumes common $\Sigma_{(W)}$, problematic for random slopes
+* **Solution (Yucel, 2011):** Allow $\Sigma_{(W)}$ to vary across L2 units ($j$)
+    $$ \mathbf{Y}_{ij(W)} \sim N_k(\boldsymbol{\mu}_j, \boldsymbol{\Sigma_{j(W)}}) $$
+* **Between-Cluster Model:** Remains the same
+* **Modeling $\Sigma_{j(W)}$:** Treat each $\Sigma_{j(W)}$ as drawn from a common *Wishart* distribution (multivariate generalization of $\chi^2$).
+    * Wishart defined by pooled degrees of freedom & scale matrix
+
+---
+
+## Random Covariance MCMC
+
+* Similar to standard JM MCMC, but adds steps within the loop:
+    * Estimate pooled scale matrix (average $\Sigma_{j(W)}$ structure)
+    * Estimate pooled degrees of freedom (related to average $n_j$)
+    * Estimate cluster-specific $\boldsymbol{\Sigma_{j(W)}}$ based on its data and borrowing strength via the Wishart prior
+* Allows imputation even if variables are fully missing within some clusters
+
+
+## Fully Conditional Specification (FCS / MICE) Imputation
+
+---
+
+## FCS Imputation: Overview
+
+* **Concept:** Extends single-level FCS (MICE) to multilevel data (van Buuren, 2011)
+* **Method:** Imputes variables one at a time using univariate regression models, conditional on all other variables. Cycles through variables iteratively
+* **Handles:** L1, L2, L3 variables. Different model types (linear, logistic, etc.) per variable
+* **Standard FCS Limitation:** Like JM, generally limited to **random intercept** models due to how random slopes are handled (or not handled)
+
+---
+
+## Standard FCS: L1 Imputation Models
+
+Uses random intercept regressions for L1 variables. Example :
+
+* **Continuous $Y_{ij}$ (e.g., PROBSOLVE):**
+    $$ Y_{ij}^{(t)} = \gamma_{01j} + \gamma_{11}X_{1ij}^{(t-1)} + ... + r_{1ij} $$
+* **Binary $Y_{ij}$ (e.g., FRLUNCH):**
+    $$ ln\left(\frac{Pr(Y_{ij}^{(t)}=1)}{1-Pr(Y_{ij}^{(t)}=1)}\right) = \gamma_{03j} + \gamma_{13}X_{1ij}^{(t)} + ... $$
+* Impute $Y_{ij(mis)}^{(t)}$ by drawing from posterior predictive distribution (Normal or Binomial). $(t)$ indicates iteration
+
+---
+
+## Standard FCS: L2 Imputation Model
+
+Uses single-level regression with **cluster means** ($\bar{X}$) of L1 vars as predictors
+
+$$
+X_{2j}^{(t)} = \gamma_{04} + \gamma_{14}\bar{Y}_{1j}^{(t)} + \gamma_{24}\bar{X}_{1j}^{(t)} + ... + \gamma_{54}X_{L2,j} + r_{04j}
+$$
+
+* $\bar{Y}_{1j}^{(t)}, \bar{X}_{1j}^{(t)}$ are arithmetic averages of (imputed) L1 variables within cluster $j$ at iteration $t$
+* Impute $X_{2j(mis)}^{(t)}$ by drawing from its posterior predictive distribution
+
+---
+
+## Standard FCS: Limitations
+
+1.  **Common Slope Assumption:** Standard specification doesn't allow within- vs. between-cluster associations to differ (unlike JM)
+    * *Workaround:* Add cluster means as predictors in L1 models (mimics JM)
+2.  **Assumes Equal Cluster Sizes ($n_j$):** Using arithmetic means ($\bar{X}$) in L2 models ignores differential reliability due to varying $n_j$. Biases tend to be small unless ICC or $n_j$ very small (Grund et al., 2017)
+
+---
+
+## FCS with Latent Variables: Overview
+
+* **Alternative Formulation:** Addresses limitations of standard FCS (Enders et al., 2018; Keller & Enders, 2021)
+* **Advantages:**
+    * Equivalent to Joint Model (JM) specification
+    * Naturally handles unequal cluster sizes ($n_j$)
+    * Uses latent response variables for categorical data
+    * Uses latent group means ($\mu_j$) instead of arithmetic means ($\bar{X}$)
+
+---
+
+## FCS Latent: Within-Cluster Regressions
+
+Reparameterizes within-cluster MVN distribution ($\Sigma_{(W)}$) as round-robin regressions
+
+$$
+Y_{1ij}^{(t)} = \mu_{1j} + \gamma_{11(W)}(Y_{2ij}^{(t-1)}-\mu_{2j}) + ... + r_{1ij(W)}
+$$
+$$
+Y_{2ij}^{(t)} = \mu_{2j} + \gamma_{12(W)}(Y_{3ij}^{(t-1)}-\mu_{3j}) + ... + r_{2ij(W)}
+$$
+... (one equation per L1 variable)
+
+* Regressors are centered at **latent group means** ($\mu_j$)
+* Intercept is the latent group mean of the variable being imputed
+* Uses latent response variables ($Y^*$) for binary/ordinal data
+
+---
+
+## FCS Latent: Between-Cluster Regressions
+
+Reparameterizes between-cluster MVN distribution ($\Sigma_{(B)}$) as round-robin regressions
+
+$$
+\mu_{1j}^{(t)} = \mu_{1} + \gamma_{11(B)}(\mu_{2j}^{(t-1)}-\mu_{2}) + ... + \gamma_{51(B)}(Y_{6j}^{*(t-1)}-\mu_{6}) + r_{1j(B)}
+$$
+... (one equation per latent mean $\mu_j$ and L2 variable $Y_k$)
+
+* Models latent means ($\mu_j$) and L2 variables ($Y_k$, possibly latent $Y_k^*$)
+* Regressors are centered at grand means ($\mu$)
+
+---
+
+## FCS Latent: Imputing Latent Means ($\mu_j$)
+
+* Latent means ($\mu_j$) are treated like missing data and updated each iteration
+* Drawn from complex conditional posterior distribution:
+    $$ f(\mu_{1j}|...) \propto \left[ \prod_{i=1}^{n_j} N(E(Y_{1ij}|...), \sigma_{Y_{1(W)}}^2) \right] \times N(E(\mu_{1j}|...), \sigma_{r_{1(B)}}^2) $$
+* Distribution depends on L1 data within cluster $j$ (weighted by $n_j$) AND L2 model
+* Explicitly accounts for unequal cluster sizes $n_j$
+
+---
+
+
+## FCS Limitation: Random Coefficients
+
+* Standard FCS approaches are generally **not suitable** for models with random coefficients (slopes)
+* **Why?** The way FCS imputes the L1 predictor involved in the random slope is often incompatible with the analysis model
+
+---
+
+## Problem: Reverse Random Coefficient Imputation
+
+* Consider analysis model: $Y_{ij} = \beta_{0j} + \beta_{1j}X_{ij} + \epsilon_{ij}$ 
+* A seemingly plausible FCS imputation model for $X_{ij}$ might be:
+    $$ X_{ij} = \gamma_{0j} + \gamma_{1j}Y_{ij} + r_{ij} $$ 
+    (i.e., a random coefficient model predicting $X$ from $Y$)
+* **Incompatibility:** These two models are logically inconsistent unless the random slope variance ($\sigma^2_{\beta_1}$) is zero. They cannot arise from the same underlying joint distribution
+
+---
+
+## Issue: Heteroscedasticity Ignored
+
+* Recall the *correct* conditional distribution for $X_{1ij(mis)}$ from Bayesian perspective:
+    $$ Var(X_{1ij}|Y_{ij}, ...) = \left( \frac{1}{\sigma_{r_{1(W)}}^2} + \frac{\boldsymbol{\beta_{1j}^2}}{\sigma_{\epsilon}^2} \right)^{-1} $$
+* The variance depends on the cluster-specific $\beta_{1j}^2$ (heteroscedastic)
+* The reverse regression model incorrectly assumes a *constant* residual variance ($\sigma_r^2$) for $X_{ij}$ across all clusters $j$. It fails to capture the necessary heteroscedasticity
+
+---
+
+## Consequences & Recommendation
+
+* **Bias:** Using standard FCS (incl. reverse random coefficient models) when the analysis model has random slopes leads to bias, particularly **underestimation of the random slope variance**.
+* **Connection:** Similar issue to "just-another-variable" imputation for interaction models (Sec 5.4). Random slope models are a type of interaction ($X_{1ij} \times \beta_{1j}$)
+* **Recommendation:** For random coefficient models, use **Bayesian estimation** or **Model-Based MI** derived from the correctly specified factored regression model. Avoid standard FCS
+
+
+
+##  Maximum Likelihood (ML) Estimation
+
+---
+
+## ML Overview
+
+* Currently arguably **less capable** than Bayesian/MI for complex multilevel missing data problems (e.g., random slopes with missing predictors)
+* Handles a more limited set of scenarios effectively
+
+---
+
+## ML: Incomplete Outcomes Only
+
+* **Handled by standard mixed model software** (e.g., `lme4`, `nlme`, SAS PROC MIXED, SPSS MIXED)
+* If missingness depends only on observed predictors (MAR), analyzing the observed $Y$ values gives valid ML estimates
+* No imputation needed; equivalent to complete-data estimation with unbalanced cluster sizes ($n_j$)
+
+---
+
+## ML: Incomplete Predictors - Challenges
+
+* Many standard MLM packages **default to listwise deletion** if predictors are missing
+    * Assumes MCAR (often unrealistic)
+    * Reduces sample size, potentially discarding entire clusters
+* Need specialized ML approaches
+
+---
+
+## ML Approach 1: HLM Software
+
+* **Method:** Shin & Raudenbush (2007, 2013) approach implemented in HLM software
+* **Assumptions:** Incomplete predictors are multivariate normal (MVN)
+* **Limitations:**
+    * No capacity for incomplete categorical predictors
+    * No capacity for random slopes between *incomplete* L1 variables
+* **Mechanism:** Reparameterizes MLM into within/between MVN components (like JM). Uses EM algorithm to estimate means/covariances, transforms back to regression parameters
+
+---
+
+## ML Approach 2: Multilevel SEM
+
+* **Method:** Use Full Information Maximum Likelihood (FIML) within a Structural Equation Modeling framework
+* **Assumption:** Typically assumes incomplete variables are MVN
+* **Capability:** Can *specify* models with incomplete random slope predictors
+* **Limitation:** Prone to **substantial bias** when predictors in random slopes are missing (Enders et al., 2018, 2020). Fails to account for heteroscedasticity 
+* **Recommendation:** Best suited for **random intercept** models when predictors are missing (assuming MVN)
+
+---
+
+## Multilevel SEM Framework
+
+* **Recap SEM (Ch 3):** Models individual data vector $\mathbf{Y}_i \sim N(\boldsymbol{\mu}(\theta), \boldsymbol{\Sigma}(\theta))$. FIML uses available data for each case
+* **Multilevel SEM:** Unit of analysis is the cluster ($j$). $\mathbf{Y}_j$ is the vector of all L1 observations for cluster $j$
+    * $\mathbf{Y}_j = (Y_{1j}, Y_{2j}, ..., Y_{n_j, j})'$
+    * Assumes $\mathbf{Y}_j$ follows a multivariate normal distribution with a structured mean vector $\boldsymbol{\mu}_j(\theta)$ and covariance matrix $\boldsymbol{\Sigma}_j(\theta)$ derived from the MLM parameters $\theta$
+
+---
+
+## Summary
+
+- Multilevel Data: Characterized by hierarchical nesting (e.g., measurements within persons, students within schools), leading to variance and covariance at multiple levels
+- Models Discussed: The chapter covers random intercept, random coefficient (random slope), cross-level interaction, and three-level (e.g., growth curve) models. Centering strategies (latent group-mean, grand-mean) are crucial
+- Core Missing Data Challenge: Handling missing predictors, especially Level-1 predictors involved in random slopes or interactions, is complex due to induced heteroscedasticity in their conditional distributions

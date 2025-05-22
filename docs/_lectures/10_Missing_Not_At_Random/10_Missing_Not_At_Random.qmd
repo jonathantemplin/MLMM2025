@@ -1,0 +1,302 @@
+---
+title: "Missing Not At Random"
+author: "Lecture 10: April 30, 2025" 
+format: 
+  revealjs:
+    multiplex: false
+    footer: "[https://jonathantemplin.github.io/MissingDataMethods2025/](https://jonathantemplin.github.io/MissingDataMethods2025/)"
+    theme: ["pp.scss"]
+    slide-number: c/t
+    incremental: false
+    
+---
+
+## Chapter 9 Overview
+
+* This chapter focuses on **Missing Not At Random (MNAR)** processes
+* Unlike MAR (Missing At Random), MNAR assumes unseen (missing) values *do* carry unique information about why they are missing
+* The MAR assumption is convenient but may not always hold
+
+---
+
+## MNAR: The Challenge
+
+* **Definition:** The probability of missingness is related to the unseen score values themselves
+* **Problem:** Standard analyses assuming MAR can lead to biased results if the data are actually MNAR
+* **Goal:** Mitigate nonresponse bias when MNAR is suspected
+
+---
+
+## Two Major MNAR Modeling Frameworks
+
+1.  **Selection Models:**
+    * Model the *probability of missingness* as an outcome
+    * Use a regression equation with a missing data indicator as the dependent variable
+    * Treat missingness as dependent on the analysis variables
+
+2.  **Pattern Mixture Models:**
+    * Model *data patterns* based on missingness
+    * Use the missing data indicator as a predictor or moderator
+    * Assume different parameters for different missing data patterns
+
+---
+
+## Key Considerations & Sensitivity Analysis
+
+* **Strict Assumptions:** MNAR models require strong, often *unverifiable*, assumptions (e.g., distributional assumptions for selection models, specifying inestimable parameters for pattern mixture models)
+* **Risk of Misspecification:** Incorrect MNAR models can potentially *increase* bias compared to MAR analyses
+* **Best Use Case:** Often used for **Sensitivity Analysis** - examining how results change under different missing data assumptions (MAR vs. various MNAR scenarios)
+
+
+## MNAR Processes Revisited
+
+* **MNAR Definition:** The probability of missingness, $Pr(M_i=1)$, is related to the unseen score values, $Y_{i(mis)}$
+* Gomer & Yuan (2021) propose a useful distinction:
+    * Focused MNAR
+    * Diffuse MNAR
+* This distinction helps structure sensitivity analyses
+
+---
+
+## Focused MNAR
+
+* **Definition:** Missingness depends *only* on the unseen score values in $Y_{i(mis)}$
+* **Conditional Distribution:**
+    $$ Pr(M_i = 1 | Y_{i(mis)}, \Phi) $$
+    Where:
+    * $M_i$ is the vector of missingness indicators for individual $i$
+    * $Y_{i(mis)}$ are the unseen score values for individual $i$
+    * $\Phi$ represents model parameters for the missing data process
+* **Example:** Unseen depression scores are the *sole* determinant of missingness (e.g., participants with worst symptoms leave)
+
+---
+
+## Diffuse MNAR
+
+* **Definition:** Missingness depends on *both* the unseen score values ($Y_{i(mis)}$) *and* the observed data ($Y_{i(obs)}$)
+* **Conditional Distribution:**
+    $$ Pr(M_i = 1 | Y_{i(obs)}, Y_{i(mis)}, \Phi) $$
+    Where:
+    * $Y_{i(obs)}$ are the observed score values for individual $i$
+    * Other terms are as defined previously
+* **Example:** Participants with worst symptoms ($Y_{i(mis)}$) leave *and* participants with low perceived control ($Y_{i(obs)}$) miss assessments due to daily disruptions
+
+---
+
+## Implications of Focused vs. Diffuse MNAR
+
+* The distinction implies nonresponse is entangled with the outcome variable
+* **Diffuse processes:**
+    * Generally considered harder to model (e.g., may require larger sample sizes)
+    * Potentially capable of inducing greater nonresponse bias than focused processes
+* Understanding the potential type of MNAR can guide modeling choices
+
+
+
+## Major Modeling Frameworks
+
+* How do we model MNAR processes? Two main approaches:
+    1.  **Selection Models**
+    2.  **Pattern Mixture Models**
+* Both aim to mitigate nonresponse bias by modeling the occurrence of missing data
+* They start by factorizing the joint distribution of data ($Y_i$) and missingness indicators ($M_i$)
+
+---
+
+## Selection Models
+
+* **Factorization:**
+    $$ f(Y_i, M_i) = f(M_i | Y_i) \times f(Y_i) $$
+    * $f(M_i | Y_i)$: Model for missingness *given* the data (e.g., logistic/probit regression of M on Y, X)
+    * $f(Y_i)$: The primary analysis model (e.g., regression of Y on X)
+* **Interpretation:** Treats missingness ($M$) as an *outcome* that depends on the analysis variables ($Y$, potentially $X$)
+* **Analogy:** Similar to statistical mediation (e.g., X -> Y -> M)
+
+
+---
+
+## Pattern Mixture Models
+
+* **Factorization:**
+    $$ f(Y_i, M_i) = f(Y_i | M_i) \times f(M_i) $$
+    * $f(Y_i | M_i)$: Analysis model where parameters *differ* based on missing data pattern ($M$)
+    * $f(M_i)$: Model describing the proportions of different missing data patterns
+* **Interpretation:** Treats missingness ($M$) as a *predictor* or *moderator*. Participants with different missing data patterns form distinct subgroups with potentially different parameter values
+* **Analogy:** Similar to moderation or group comparisons
+
+---
+
+## Selection vs. Pattern Mixture: Key Differences
+
+* **Equivalence:** Both attempt to describe the same joint distribution $f(Y_i, M_i)$
+* **Differences:**
+    * Require different inputs and assumptions
+    * Can yield different estimates for the same data
+    * Tell different "stories" about the missing data process:
+        * Selection: Missingness is an *outcome*
+        * Pattern Mixture: Missingness is a *grouping/moderating* variable
+* Either (or both) could be plausible for a given application
+
+
+
+
+## Selection Models for Multiple Regression
+
+* **Origins:** Trace back to Heckman's (1976, 1979) work on sample selection bias
+* **Core Idea:** Pair the focal analysis model (e.g., regression) with an additional model for the missing data indicator (M)
+* **Modern Approach:** Typically uses likelihood or Bayesian estimation via factored regressions, rather than Heckman's original two-step method
+
+---
+
+## The Missingness Model (Probit)
+
+* Assumes an underlying latent variable ($M_i^*$) representing the propensity for missingness
+* $M_i^*$ is typically assumed to be normally distributed
+* A threshold ($\tau$) determines the observed missingness status ($M_i$):
+    $$ M_i = \begin{cases} 0 & \text{if } M_i^* \le \tau \\ 1 & \text{if } M_i^* > \tau \end{cases} $$
+* For identification:
+    * Threshold $\tau$ is usually fixed at 0
+    * Residual variance of $M_i^*$ is fixed at 1 ($\sigma_r^2 = 1$)
+
+---
+
+## Focused Selection Model
+
+* **Focal Model:** Standard regression
+    $$ Y_i = \beta_0 + \beta_1 X_i + \epsilon_i \quad \text{where } \epsilon_i \sim N(0, \sigma_\epsilon^2) $$
+* **Missingness Model:** Only the *dependent variable* ($Y_i$) predicts missingness
+    $$ M_i^* = \gamma_0 + \gamma_1 Y_i + r_i \quad \text{where } r_i \sim N(0, 1) $$
+* **Interpretation:** Missingness depends only on the value of the variable that is missing
+* **Analogy:** Single mediator model (X influences M only *through* Y)
+
+---
+
+## Diffuse Selection Model 
+
+* **Focal Model:** Standard regression (same as focused)
+    $$ Y_i = \beta_0 + \beta_1 X_i + \epsilon_i \quad \text{where } \epsilon_i \sim N(0, \sigma_\epsilon^2) $$
+* **Missingness Model:** Both the dependent ($Y_i$) and independent ($X_i$) variables predict missingness
+    $$ M_i^* = \gamma_0 + \gamma_1 Y_i + \gamma_2 X_i + r_i \quad \text{where } r_i \sim N(0, 1) $$
+* **Interpretation:** Missingness depends on the value of the missing variable *and* other variables in the model
+* **Analogy:** Partially mediated model (X influences M directly *and* through Y)
+
+---
+
+## Important Assumptions
+
+1.  **Bivariate Normality:** The residuals of the focal model ($\epsilon_i$) and the missingness model ($r_i$) must follow a bivariate normal distribution
+    * This is a *strict* and *untestable* assumption
+    * It's the "glue" holding the models together, especially when $Y_i$ predicts $M_i^*$
+2.  **Correct Specification of Missingness Model:**
+    * Must include the *correct* predictors of missingness
+    * Must use the *correct functional form* (e.g., linear, curvilinear). Example for curvilinear effect of Y:
+        $$ M_i^* = \gamma_0 + \gamma_1 Y_i + \gamma_2 Y_i^2 + r_i $$
+    * Omitting important predictors $\rightarrow$ Bias
+    * Including unnecessary predictors $\rightarrow$ Noisy estimates, reduced precision
+    * Auxiliary variables (predict M but not Y, or vice-versa) can help identification and estimation
+
+---
+
+## How Selection Models Mitigate Bias
+
+* They use a **factored regression** approach:
+    $$ f(Y, M, X) = f(M|Y, X) \times f(Y|X) \times f(X) $$
+* The key is how the model defines the distribution of the *missing* Y values, $f(Y_{i(mis)} | M_i^*, X_i)$
+* This distribution becomes conditional on *both* the focal model parameters ($\beta$s) *and* the selection model parameters ($\gamma$s)
+    $$ E(Y_i|M_i^*, X_i) = \text{Var}(Y_i|M_i^*, X_i) \times \left( \frac{\gamma_1(M_i^* - \gamma_0 - \gamma_2 X_i)}{\sigma_r^2} + \frac{\beta_0 + \beta_1 X_i}{\sigma_\epsilon^2} \right) $$
+    $$ \text{Var}(Y_i|M_i^*, X_i) = \left( \frac{\gamma_1^2}{\sigma_r^2} + \frac{1}{\sigma_\epsilon^2} \right)^{-1} $$
+* The coefficient $\gamma_1$ (linking $Y_i$ to $M_i^*$) introduces the MNAR correction. If $\gamma_1 = 0$, the model simplifies to MAR
+
+---
+
+## Practical Recommendations
+
+* **Model Complexity:** Diffuse models are harder to estimate and may require larger N than focused models
+* **Specification:** While omitting important predictors is generally worse, overfitting (too many predictors in missingness model) reduces precision and power. Be judicious
+* **Building Strategy:** Start with a focused model. Add potential predictors (especially those from the focal model or strong auxiliary variables) stepwise, checking model fit and parameter stability (Ibrahim et al., 2005)
+* **Diagnostics:** Carefully inspect parameter estimates and standard errors. Watch for:
+    * Large increases in SEs compared to MAR models
+    * Implausibly large $R^2$ for the missingness model
+    * Convergence issues
+
+
+ 
+## Pattern Mixture Models (PMM) for Regression
+
+* **Contrast:** PMMs align with *moderated* processes (vs. *mediated* for selection models)
+* **Core Idea:**
+    1. Define subgroups based on missing data patterns (e.g., completers vs. those missing Y)
+    2. Estimate model parameters *within each pattern*
+    3. Compute overall (marginal) parameters as a *weighted average* of pattern-specific estimates, weighted by pattern proportions ($\pi^{(pattern)}$)
+    $$ \text{e.g., } \mu_Y = \pi^{(0)}\mu_Y^{(0)} + \pi^{(1)}\mu_Y^{(1)} $$
+
+---
+
+## PMM: The Challenge of Inestimability
+
+* **Problem:** For patterns with missing data on Y, parameters involving Y (means, variances, covariances/slopes) cannot be estimated directly from the data for that pattern
+    * E.g., In the pattern where Y is missing ($M=1$), $\mu_Y^{(1)}$, $\sigma_Y^{2(1)}$, $\beta_1^{(1)}$ are inestimable
+* **Solution Required:** Must either:
+    * Provide plausible values for the inestimable parameters
+    * Impose *identifying restrictions* (borrowing information from other patterns)
+
+---
+
+## PMM Specification: Moderated Regression
+
+* Use the missing data indicator ($M_i$, coded 0/1) as a moderator
+* **Diffuse PMM:** Allows intercept and slope(s) to differ by pattern
+    $$ Y_i = \beta_0^{(0)} + \beta_0^{(diff)} M_i + \beta_1^{(0)} X_i + \beta_1^{(diff)} X_i M_i + \epsilon_i $$
+    * $\beta_0^{(0)}, \beta_1^{(0)}$: Intercept & slope for completers ($M=0$)
+    * $\beta_0^{(diff)}, \beta_1^{(diff)}$: *Inestimable* differences for pattern $M=1$
+* **Focused PMM:** Allows only intercept to differ (common slope $\beta_1$)
+    $$ Y_i = \beta_0^{(0)} + \beta_0^{(diff)} M_i + \beta_1 X_i + \epsilon_i $$
+    * Only $\beta_0^{(diff)}$ is inestimable here
+
+---
+
+## Specifying Inestimable Parameters (Heuristic)
+
+* Use standardized effect sizes (e.g., Cohen's *d*) as a guide
+* **Intercept Difference ($\beta_0^{(diff)}$):** Specify a plausible standardized mean difference (*d*) between patterns at the mean of X.
+    $$ \beta_0^{(diff)} \approx d \times \hat{\sigma}_Y \quad \text{or} \quad d \times \sqrt{\hat{\sigma}_\epsilon^2} $$
+    * Get $\hat{\sigma}_Y$ or $\hat{\sigma}_\epsilon^2$ from a preliminary MAR analysis
+* **Slope Difference ($\beta_1^{(diff)}$):** Specify a plausible difference in standardized slopes ($d_\Delta$) between patterns.
+    $$ \beta_1^{(diff)} \approx d_\Delta \times \frac{\hat{\sigma}_Y}{\hat{\sigma}_X} \quad \text{or} \quad d_\Delta \times \frac{\sqrt{\hat{\sigma}_\epsilon^2}}{\hat{\sigma}_X} $$
+    * Choose plausible values for *d* and $d_\Delta$ (e.g., ±0.1, ±0.2, ±0.5)
+
+---
+
+## PMM: Assumptions & Pooling
+
+* **Key Assumption:** Correct specification of the pattern differences (which parameters differ, and by how much via specified values or restrictions)
+* **Transparency:** Unlike selection models, the assumptions about the missing data mechanism are explicit in the specified differences or restrictions
+* **Pooling:** To get marginal estimates (averaging over patterns), you need pattern proportions ($\pi^{(0)}, \pi^{(1)}$)
+    * Estimate $\pi$'s using $f(M_i)$ (e.g., empty probit model)
+    * Combine estimates and standard errors (e.g., delta method, Bayesian estimation, MI)
+
+---
+
+## PMM for Sensitivity Analysis
+
+* **Challenge:** Choosing the "correct" single value for $d$ or $d_\Delta$ is difficult/impossible
+* **Strategy:** Fit the PMM repeatedly using a *range* of plausible values for the inestimable parameters (e.g., $d$ from -0.5 to +0.5)
+* **Goal:** Assess the sensitivity of results to different MNAR assumptions
+    * "How much does the missing data distribution need to differ ($d, d_\Delta$) to meaningfully change MAR-based estimates?"
+    * "How big a difference is needed to change substantive conclusions (e.g., significance tests)?"
+
+
+## Summary: MNAR Models (Regression Focus)
+
+* **MNAR:** Missingness depends on unobserved values (focused or diffuse)
+* **Goal:** Mitigate bias when MAR is questionable, often via **Sensitivity Analysis**
+* **Selection Models:**
+    * Model $Pr(M|Y,X)$; Missingness is DV
+    * Assumes bivariate normality of residuals (strict, untestable)
+    * Bias correction via factored regression conditional on $\gamma$s
+* **Pattern Mixture Models:**
+    * Model $f(Y|M)$; Missingness defines subgroups/moderates effects
+    * Challenge: Inestimable parameters for patterns missing Y
+    * Solution: Specify differences (e.g., via effect size $d, d_\Delta$) or use restrictions
+    * Transparent assumptions, useful for exploring range of MNAR scenarios
+

@@ -82,11 +82,15 @@ ul.task-list li input[type="checkbox"] {
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#course-objectives" id="toc-course-objectives" class="nav-link active" data-scroll-target="#course-objectives">Course Objectives</a></li>
-  <li><a href="#course-readings" id="toc-course-readings" class="nav-link" data-scroll-target="#course-readings">Course Readings</a></li>
-  <li><a href="#course-details" id="toc-course-details" class="nav-link" data-scroll-target="#course-details">Course Details</a></li>
-  <li><a href="#current-assignments" id="toc-current-assignments" class="nav-link" data-scroll-target="#current-assignments">Current Assignments</a></li>
-  <li><a href="#lecture-and-class-files-and-links" id="toc-lecture-and-class-files-and-links" class="nav-link" data-scroll-target="#lecture-and-class-files-and-links">Lecture and Class Files and Links</a></li>
+  <li><a href="#multilevel-measurement-models-workshop-summer-2025-universität-mannheim" id="toc-multilevel-measurement-models-workshop-summer-2025-universität-mannheim" class="nav-link active" data-scroll-target="#multilevel-measurement-models-workshop-summer-2025-universität-mannheim">Multilevel Measurement Models Workshop, Summer 2025 (Universität Mannheim)</a>
+  <ul class="collapse">
+  <li><a href="#instructors-lesa-hoffman-and-jonathan-templin" id="toc-instructors-lesa-hoffman-and-jonathan-templin" class="nav-link" data-scroll-target="#instructors-lesa-hoffman-and-jonathan-templin">Instructors: Lesa Hoffman and Jonathan Templin</a>
+  <ul class="collapse">
+  <li><a href="#repository-information" id="toc-repository-information" class="nav-link" data-scroll-target="#repository-information">Repository Information</a></li>
+  </ul></li>
+  <li><a href="#workshop-description" id="toc-workshop-description" class="nav-link" data-scroll-target="#workshop-description">Workshop Description</a></li>
+  </ul></li>
+  <li><a href="#guide-to-workshop-scripts" id="toc-guide-to-workshop-scripts" class="nav-link" data-scroll-target="#guide-to-workshop-scripts">Guide to Workshop Scripts</a></li>
   </ul>
 </nav>
     </div>
@@ -112,207 +116,227 @@ ul.task-list li input[type="checkbox"] {
 </header>
 
 
-<section id="course-objectives" class="level2">
-<h2 class="anchored" data-anchor-id="course-objectives">Course Objectives</h2>
-<p>This course section explores missing data methods in applied statistics, data science, and psychometrics; emphasizing techniques such as multiple imputation, Bayesian methods, and maximum likelihood to handle and analyze incomplete data sets effectively.</p>
+<section id="multilevel-measurement-models-workshop-summer-2025-universität-mannheim" class="level1">
+<h1>Multilevel Measurement Models Workshop, Summer 2025 (Universität Mannheim)</h1>
+<section id="instructors-lesa-hoffman-and-jonathan-templin" class="level2">
+<h2 class="anchored" data-anchor-id="instructors-lesa-hoffman-and-jonathan-templin">Instructors: <a href="https://lesahoffman.com">Lesa Hoffman</a> and <a href="https://jonathantemplin.com">Jonathan Templin</a></h2>
+<p>This repository contains the materials for the Multilevel Measurement Models Workshop 2025, held 30 June - 4 July, 2025 at the Universität Mannheim. This workshop was held in the Research Training Group “Statistical Modeling in Psychology”, funded by the <a href="German Research Foundation (DFG)">https://www.dfg.de/en</a>. It is organized by the DFG funded Research Training Group on <a href="“Statistical Modeling in Psychology” (SMiP)">https://www.uni-mannheim.de/smip/</a> in collaboration with the <a href="Interuniversity Graduate School of Psychometrics and Sociometrics (IOPS)">https://www.iops.nl/</a>. Details about the event can be found at <a href="https://www.uni-mannheim.de/smip-summerschool/">https://www.uni-mannheim.de/smip-summerschool/</a>.</p>
+<p>Workshop videos are available via YouTube with a link forthcoming after the first session of the workshop, on 01 July, 2025.</p>
+<section id="repository-information" class="level3">
+<h3 class="anchored" data-anchor-id="repository-information">Repository Information</h3>
+<p>The folder structure of the repository is set to correspond with the analysis files found in the root folder. All other paths for necessary files are relative.</p>
+<p>Please note, Stan output files (the empty model folder) are not included in the repository. These files will be created when the models are run.</p>
 </section>
-<section id="course-readings" class="level2">
-<h2 class="anchored" data-anchor-id="course-readings">Course Readings</h2>
-<p>The course will follow the chapters of Applied Missing Data Analysis (2nd Edition) by Craig Enders. The University of Iowa Library has electronic access to the book at <a href="https://ebookcentral-proquest-com.proxy.lib.uiowa.edu/lib/uiowa/detail.action?docID=7027149" class="uri">https://ebookcentral-proquest-com.proxy.lib.uiowa.edu/lib/uiowa/detail.action?docID=7027149</a>. Additional readings will be posted our course ICON site.</p>
 </section>
-<section id="course-details" class="level2">
-<h2 class="anchored" data-anchor-id="course-details">Course Details</h2>
+<section id="workshop-description" class="level2">
+<h2 class="anchored" data-anchor-id="workshop-description">Workshop Description</h2>
+<p>This workshop will focus on the use of latent variable measurement models in multilevel sampling designs (e.g., persons within clusters, occasions within persons, stimuli crossed with persons). Course time will be allocated to traditional lectures, guided practice building models, and opportunities for individual data analysis (or further independent practice through instructor-provided data analysis activities). Day 1 will focus on latent variable measurement models for normal, binary, and ordinal responses (all in slope–intercept form) and introduce Stan for MCMC estimation. Day 2 will present concepts of multilevel models using observed outcomes and transition into three-level models for item responses nested in persons nested in clusters. Day 3 will extend multilevel models to include latent variable measurement models with level-specific discrimination parameters. Finally, Day 4 will make connections to models in which item parameters are treated as random effects instead of fixed effects (i.e., for predicting sources of item difficulty and discrimination, as in explanatory item response models). All instructional sessions will be recorded for future use by both participants and the general public.</p>
+<p>Prerequisite knowledge and skills include: (1) familiarity with R software for data analysis, (2) some familiarity with Markov Chain Monte Carlo (MCMC) estimation (i.e., have estimated models with MCMC before), (3) some prior knowledge of latent variable measurement models (i.e., confirmatory factor analysis for continuous responses; item response theory for binary and ordinal responses), and (4) some prior knowledge of multilevel models (i.e., hierarchical linear models, mixed-effects models). The course will use Stan software as run through R (using CMDStanR), but no prior experience with Stan is assumed. Participants who wish to use their own devices during the workshop should install Stan ahead of time. No readings will be required ahead of time.</p>
+</section>
+</section>
+<section id="guide-to-workshop-scripts" class="level1">
+<h1>Guide to Workshop Scripts</h1>
 <table class="caption-top table">
-<tbody>
-<tr class="odd">
-<td>Instructor:</td>
-<td>Jonathan Templin</td>
-</tr>
-<tr class="even">
-<td>email:</td>
-<td><a href="mailto:jonathan-templin@uiowa.edu">jonathan-templin@uiowa.edu</a></td>
-</tr>
-<tr class="odd">
-<td>Course website:</td>
-<td><a href="https://jonathantemplin.github.io/MissingDataMethods2025/" class="uri">https://jonathantemplin.github.io/MissingDataMethods2025/</a></td>
-</tr>
-<tr class="even">
-<td>Course repo:</td>
-<td><a href="https://github.com/jonathantemplin/MissingDataMethods2025" class="uri">https://github.com/jonathantemplin/MissingDataMethods2025</a></td>
-</tr>
-<tr class="odd">
-<td>Course YouTube Playlist:</td>
-<td><a href="https://www.youtube.com/watch?v=-YUmmA_akLM&amp;list=PLSmMs4UgmSMgYbH3ryj-BTk7F7WWbgWPO" class="uri">https://www.youtube.com/watch?v=-YUmmA_akLM&amp;list=PLSmMs4UgmSMgYbH3ryj-BTk7F7WWbgWPO</a></td>
-</tr>
-<tr class="even">
-<td>Office:</td>
-<td>S300A Lindquist Center</td>
-</tr>
-<tr class="odd">
-<td>Office Phone:</td>
-<td>319-335-6429</td>
-</tr>
-<tr class="even">
-<td>Classroom:</td>
-<td>S108 LC</td>
-</tr>
-<tr class="odd">
-<td>Course Meeting Time:</td>
-<td>W 12:30pm-3:20pm</td>
-</tr>
-<tr class="even">
-<td>Course Office Hours:</td>
-<td>W 10:00am-12:00pm via Zoom at <a href="https://uiowa.zoom.us/my/jonathantemplinuiowa" class="uri">https://uiowa.zoom.us/my/jonathantemplinuiowa</a></td>
-</tr>
-<tr class="odd">
-<td>Syllabus:</td>
-<td><a href="https://jonathantemplin.github.io/MissingDataMethods2025/s25mdm_syllabus.html" class="uri">https://jonathantemplin.github.io/MissingDataMethods2025/s25mdm_syllabus.html</a></td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="current-assignments" class="level2">
-<h2 class="anchored" data-anchor-id="current-assignments">Current Assignments</h2>
-<table class="caption-top table">
+<colgroup>
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+<col style="width: 25%">
+</colgroup>
 <thead>
 <tr class="header">
-<th>Assignment</th>
-<th>Due Date</th>
+<th>Unit</th>
+<th>Syntax</th>
+<th>Results</th>
+<th>Description</th>
 </tr>
 </thead>
 <tbody>
 <tr class="odd">
-<td>Homework #5 (Available in ICON)</td>
-<td>06 May</td>
-</tr>
-</tbody>
-</table>
-</section>
-<section id="lecture-and-class-files-and-links" class="level2">
-<h2 class="anchored" data-anchor-id="lecture-and-class-files-and-links">Lecture and Class Files and Links</h2>
-<style>
-table {
-  border-collapse: collapse;
-  width: 100%;
-  border: 1px solid #ddd;
-}
-
-th, td {
-  text-align: left;
-  padding: 16px;
-}
-</style>
-<table class="caption-top table">
-<tbody>
-<tr class="odd">
-<td><h1 id="date">Date</h1></td>
-<td><h1 id="topic">Topic</h1></td>
-<td><h1 id="materials">Materials</h1></td>
+<td>01</td>
+<td>01_Introduction_Bayes_Stan_IRT.docx</td>
+<td></td>
+<td>Quarto document with Word-formatted slides for Introduction to Bayesian Estimation with Stan</td>
 </tr>
 <tr class="even">
-<td>22 Jan</td>
-<td>Introduction to class</td>
-<td><ul>
-<li><a href="https://jonathantemplin.github.io/MissingDataMethods2025/s25mdm_syllabus.html">Syllabus</a></li>
-<li><a href="https://www.youtube.com/watch?v=-YUmmA_akLM&amp;list=PLSmMs4UgmSMgYbH3ryj-BTk7F7WWbgWPO">Lecture Video</a></li>
-</ul></td>
+<td></td>
+<td>01_unidimensionalIRT.R</td>
+<td></td>
+<td>R script for IRT models (Marginal ML and Bayesian)</td>
 </tr>
 <tr class="odd">
-<td>29 Jan</td>
-<td>Introduction to Missing Data</td>
-<td><ul>
-<li><a href="https://jonathantemplin.github.io/MissingDataMethods2025/_lectures/01_Introduction_to_Missing_Data/01_Introduction_Missing_Data_S2025.html#/title-slide">Slides (HTML)</a></li>
-<li><a href="https://jonathantemplin.github.io/MissingDataMethods2025/_lectures/01_Introduction_to_Missing_Data/01_Introduction_Missing_Data_S2025.pdf">Slides (PDF)</a></li>
-<li><a href="https://github.com/jonathantemplin/MissingDataMethods2025/tree/main/_lectures/01_Introduction_to_Missing_Data">R files</a></li>
-<li><a href="https://youtu.be/UbO_SZXaTcg">Lecture Video</a></li>
-</ul></td>
+<td></td>
+<td>01_model01.stan</td>
+<td>01_model01.RData</td>
+<td>Unidimenionsal 1PL Model</td>
 </tr>
 <tr class="even">
-<td>05 Feb</td>
-<td>Technical Prerequisites</td>
-<td><ul>
-<li><a href="https://jonathantemplin.github.io/MissingDataMethods2025/_lectures/02_Technical_Prerequisites/02_Technical_Prerequisites_S2025.pdf">Slides (PDF)</a></li>
-<li><a href="https://github.com/jonathantemplin/MissingDataMethods2025/tree/main/_lectures/02_Technical_Prerequisites">R files</a></li>
-<li><a href="https://youtu.be/LVLebx5hweI">Lecture Video</a></li>
-</ul></td>
+<td></td>
+<td>01_model02.stan</td>
+<td>01_model02.RData</td>
+<td>Unidimenionsal 2PL Model (Standardized Factor)</td>
 </tr>
 <tr class="odd">
-<td>12 Feb</td>
-<td>Maximum Likelihood Estimation</td>
-<td><ul>
-<li><a href="https://jonathantemplin.github.io/MissingDataMethods2025/_lectures/03_Maximum_Likelihood_Estimation/03_Maximum_Likelihood_Estimation_S2025.pdf">Slides (PDF)</a></li>
-<li><a href="https://github.com/jonathantemplin/MissingDataMethods2025/tree/main/_lectures/03_Maximum_Likelihood_Estimation">R files</a></li>
-<li><a href="https://youtu.be/e4iMA0XB9qw">Lecture Video</a></li>
-</ul></td>
+<td></td>
+<td>01_model03.stan</td>
+<td>01_model03.RData</td>
+<td>Unidimenionsal 2PL Model (Maker Item Discrimination)</td>
 </tr>
 <tr class="even">
-<td>19 Feb</td>
-<td>MLE with Missing Data (and lavaan)</td>
-<td><ul>
-<li><a href="https://jonathantemplin.github.io/MissingDataMethods2025/_lectures/04_lavaan_and_Missing_Data_Using_MLEs/04_lavaan_and_Missing_Data_Using_MLE_S2025.pdf">Slides (PDF)</a></li>
-<li><a href="https://github.com/jonathantemplin/MissingDataMethods2025/tree/main/_lectures/04_lavaan_and_Missing_Data_Using_MLEs">R files</a></li>
-<li><a href="https://youtu.be/e4iMA0XB9qw">Lecture Video</a></li>
-</ul></td>
+<td>02</td>
+<td>02_Multilevel_Observed.pdf</td>
+<td></td>
+<td>PDF of slides for Multilevel (Observed) Models</td>
 </tr>
 <tr class="odd">
-<td>26 Feb</td>
-<td>No Class</td>
+<td></td>
+<td>02_mlm_Bayes.R</td>
+<td></td>
+<td>R script for Multilevel (Non-Measurement) Models with Bayesian Estimation</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>02_mlm_ML.docx</td>
+<td></td>
+<td>R markdown output for Multilevel (Non-Measurement) Models with Maximum Likelihood Estimation</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>02_mlm_ML.R</td>
+<td></td>
+<td>R script for Multilevel (Non-Measurement) Models with Maximum Likelihood Estimation</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>02_model01.stan</td>
+<td>02_model01.RData</td>
+<td>Empty (Non-Multilevel) Linear Model for Sum Score</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>02_model02.stan</td>
+<td>02_model02a.RData</td>
+<td>Random Intercept Model for Sum Score</td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+<td>02_model02b.RData</td>
+<td>Multilevel Model of Sum Score with Free/Reduced Lunch Smushed</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+<td>02_model02c.RData</td>
+<td>Multilevel Model of Sum Score with Free/Reduced Lunch at L1 and L2</td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+<td>02_model02d.RData</td>
+<td>Multilevel Model of Sum Score with Cluster Centered Free/Reduced Lunch at L1 and L2</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>02_model03.stan</td>
+<td>02_model03.RData</td>
+<td>Empty (Non-Multilevel) Generalized Linear Model for Free/Reduced Lunch Status</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>02_model04.stan</td>
+<td>02_model04.RData</td>
+<td>Random Intercept Model for Free/Reduced Lunch Status</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>02_model05.stan</td>
+<td>02_model05a.RData</td>
+<td>Random Linear Slope Model for Free/Reduced Lunch Status</td>
+</tr>
+<tr class="even">
+<td></td>
+<td></td>
+<td>02_model05b.RData</td>
+<td>Random Linear Slope Model for Free/Reduced Lunch Status with Cross-Level Interaction</td>
+</tr>
+<tr class="odd">
+<td>03</td>
+<td>03_Multilevel_Measurement.pdf</td>
+<td></td>
+<td>PDF of slides for Multilevel Measurement Models</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>03_Multilevel_Measurement_Equations.docx</td>
+<td>Multilevel measurement model equations and notation</td>
 <td></td>
 </tr>
-<tr class="even">
-<td>05 Mar</td>
-<td>lavaan and Maximum Likelihood Estimation with Missing Data (Chapter 3)</td>
-<td><ul>
-<li><a href="https://jonathantemplin.github.io/MissingDataMethods2025/_lectures/05_Missing_Data_with_MLEs/05_MLE_with_Missing_Data.html">Handout (html)</a></li>
-<li><a href="https://github.com/jonathantemplin/MissingDataMethods2025/tree/main/_lectures/05_Missing_Data_with_MLEs">R files</a></li>
-<li><a href="https://youtu.be/o8G5bN-6QSg">Lecture Video</a></li>
-</ul></td>
-</tr>
 <tr class="odd">
-<td>12 Mar</td>
-<td>Introduction to Bayesian Methods</td>
-<td><ul>
-<li><a href="https://jonathantemplin.github.io/MissingDataMethods2025/_lectures/06_Bayesian_Estimation/06_Introduction_to_Bayesian.pdf">Slides (pdf)</a></li>
-<li><a href="https://github.com/jonathantemplin/MissingDataMethods2025/tree/main/_lectures/06_Bayesian_Estimation">R files</a></li>
-<li><a href="https://youtu.be/Su9LCvlAa7E">Lecture Video</a></li>
-</ul></td>
+<td></td>
+<td>03_mlmm.R</td>
+<td></td>
+<td>R script for Multilevel Measurement Models with Stan</td>
 </tr>
 <tr class="even">
-<td>26 Mar and 02 Apr (See R files for additional materials)</td>
-<td>Bayesian Estimation with Missing Data</td>
-<td><ul>
-<li><a href="https://jonathantemplin.github.io/MissingDataMethods2025/_lectures/07_Missing_Data_with_Bayeisan/07_Bayesian_with_Missing_data.html">Slides (pdf)</a></li>
-<li><a href="https://github.com/jonathantemplin/MissingDataMethods2025/tree/main/_lectures/07_Missing_Data_with_Bayeisan">R files</a></li>
-<li><a href="https://youtu.be/Asj2vD8C130">Lecture Video (26 Mar)</a></li>
-<li><a href="https://youtu.be/k4rbJqrN6Ms">Lecture Video (02 Apr)</a></li>
-</ul></td>
+<td></td>
+<td>03_model01.stan</td>
+<td>03_model01.RData</td>
+<td>Empty (Non-Measurement) Two-Level Model with Correlated Random Item Intercepts</td>
 </tr>
 <tr class="odd">
-<td>09 Apr</td>
-<td>Multiple Imputation</td>
-<td><ul>
-<li><a href="https://jonathantemplin.github.io/MissingDataMethods2025/_lectures/08_Multiple_Imputation/08_Multiple_Imputation.html">Slides (pdf)</a></li>
-<li><a href="https://github.com/jonathantemplin/MissingDataMethods2025/tree/main/_lectures/08_Multiple_Imputation">R files</a></li>
-<li><a href="https://youtu.be/d6KvuYFV5xc">Lecture Video</a></li>
-</ul></td>
+<td></td>
+<td>03_model02.stan</td>
+<td>03_model02.RData</td>
+<td>Within-School Measurement Model with Correlated Random Item Intercepts and Within-School Discriminations Fixed=1</td>
 </tr>
 <tr class="even">
-<td>30 Apr</td>
-<td>Multilevel Missing Data and MNAR Processes</td>
-<td><ul>
-<li><a href="https://jonathantemplin.github.io/MissingDataMethods2025/_lectures/09_Multilevel_Missing_Data/09_Multilevel_Missing_Data_And_NMAR.html">Multilevel Missing Data Slides</a></li>
-<li><a href="https://jonathantemplin.github.io/MissingDataMethods2025/_lectures/10_Missing_Not_At_Random/10_Missing_Not_At_Random.html">MNAR Processes Slides</a></li>
-<li><a href="https://youtu.be/RWFo9cb4FZk">Lecture Video</a></li>
-</ul></td>
+<td></td>
+<td>03_model03.stan</td>
+<td>03_model03.RData</td>
+<td>Within-School Measurement Model with Correlated Random Item Intercepts and Estimated Within-School Discriminations using Standardized Theta</td>
 </tr>
 <tr class="odd">
-<td>07 May</td>
-<td>Psychometric Missing Data</td>
-<td><ul>
-<li><a href="https://jonathantemplin.github.io/MissingDataMethods2025/_lectures/11_Psychometric_Missing_Data/11_Psychometric_Missing_data.pdf">Slides (pdf)</a></li>
-<li><a href="https://github.com/jonathantemplin/MissingDataMethods2025/tree/main/_lectures/11_Psychometric_Missing_Data">R files</a></li>
-<li><a href="https://youtu.be/BKifk3hDhRQ">Lecture Video</a></li>
-</ul></td>
+<td></td>
+<td>03_model04.stan</td>
+<td>03_model04.RData</td>
+<td>Within-School Measurement Model with Correlated Random Item Intercepts and Estimated Within-School Discriminations using Item1=Marker</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>03_model05.stan</td>
+<td>03_model05.RData</td>
+<td>Within-School and Between-School Measurement Model with Uncorrelated Random Item Intercepts and Estimated Level-Specific WS (Item1=Marker) and BS (Item10=Marker) Discriminations</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>03_model06.stan</td>
+<td>03_model06.RData</td>
+<td>Within-School and Between-School Measurement Model with Uncorrelated Random Item Intercepts and Estimated Level-Constrained WS (Item1=Marker) and BS (Item1=Marker) Discriminations</td>
+</tr>
+<tr class="even">
+<td></td>
+<td>03_model07.stan</td>
+<td>03_model07.RData</td>
+<td>Within-School and Between-School Measurement Model without Random Item Intercepts and with Estimated Level-Constrained WS (Item1=Marker) and BS (Item1=Marker) Discriminations</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td>03_model08.stan</td>
+<td>03_model08.RData</td>
+<td>Within-School and Between-School Measurement Model with Uncorrelated Random Item Intercepts and Free/Reduced Lunch MLM Predictor and Estimated Level-Constrained WS (Item1=Marker) and BS (Item1=Marker) Discriminations</td>
+</tr>
+<tr class="even">
+<td>Other</td>
+<td>Other_Materials_from_Lesa_Hoffman.docx</td>
+<td></td>
+<td>Word document with additional materials from Lesa Hoffman</td>
+</tr>
+<tr class="odd">
+<td></td>
+<td></td>
+<td></td>
+<td></td>
 </tr>
 </tbody>
 </table>

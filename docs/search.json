@@ -7,41 +7,6 @@
     "text": "This repository contains the materials for the Multilevel Measurement Models Workshop 2025, held 30 June - 4 July, 2025 at the Universität Mannheim. This workshop was held in the Research Training Group “Statistical Modeling in Psychology”, funded by the https://www.dfg.de/en. It is organized by the DFG funded Research Training Group on https://www.uni-mannheim.de/smip/ in collaboration with the https://www.iops.nl/. Details about the event can be found at https://www.uni-mannheim.de/smip-summerschool/.\nWorkshop videos are available via YouTube with a link forthcoming after the first session of the workshop, on 01 July, 2025.\n\n\nThe folder structure of the repository is set to correspond with the analysis files found in the root folder. All other paths for necessary files are relative.\nPlease note, Stan output files (the empty model folder) are not included in the repository. These files will be created when the models are run.\n\n\n\n\nThis workshop will focus on the use of latent variable measurement models in multilevel sampling designs (e.g., persons within clusters, occasions within persons, stimuli crossed with persons). Course time will be allocated to traditional lectures, guided practice building models, and opportunities for individual data analysis (or further independent practice through instructor-provided data analysis activities). Day 1 will focus on latent variable measurement models for normal, binary, and ordinal responses (all in slope–intercept form) and introduce Stan for MCMC estimation. Day 2 will present concepts of multilevel models using observed outcomes and transition into three-level models for item responses nested in persons nested in clusters. Day 3 will extend multilevel models to include latent variable measurement models with level-specific discrimination parameters. Finally, Day 4 will make connections to models in which item parameters are treated as random effects instead of fixed effects (i.e., for predicting sources of item difficulty and discrimination, as in explanatory item response models). All instructional sessions will be recorded for future use by both participants and the general public.\nPrerequisite knowledge and skills include: (1) familiarity with R software for data analysis, (2) some familiarity with Markov Chain Monte Carlo (MCMC) estimation (i.e., have estimated models with MCMC before), (3) some prior knowledge of latent variable measurement models (i.e., confirmatory factor analysis for continuous responses; item response theory for binary and ordinal responses), and (4) some prior knowledge of multilevel models (i.e., hierarchical linear models, mixed-effects models). The course will use Stan software as run through R (using CMDStanR), but no prior experience with Stan is assumed. Participants who wish to use their own devices during the workshop should install Stan ahead of time. No readings will be required ahead of time."
   },
   {
-    "objectID": "index.html#course-objectives",
-    "href": "index.html#course-objectives",
-    "title": "Multilevel Measurement Models Workshop (Summer 2025; SMiP Summer School)",
-    "section": "",
-    "text": "This course section explores missing data methods in applied statistics, data science, and psychometrics; emphasizing techniques such as multiple imputation, Bayesian methods, and maximum likelihood to handle and analyze incomplete data sets effectively."
-  },
-  {
-    "objectID": "index.html#course-readings",
-    "href": "index.html#course-readings",
-    "title": "Multilevel Measurement Models Workshop (Summer 2025; SMiP Summer School)",
-    "section": "Course Readings",
-    "text": "Course Readings\nThe course will follow the chapters of Applied Missing Data Analysis (2nd Edition) by Craig Enders. The University of Iowa Library has electronic access to the book at https://ebookcentral-proquest-com.proxy.lib.uiowa.edu/lib/uiowa/detail.action?docID=7027149. Additional readings will be posted our course ICON site."
-  },
-  {
-    "objectID": "index.html#course-details",
-    "href": "index.html#course-details",
-    "title": "Multilevel Measurement Models Workshop (Summer 2025; SMiP Summer School)",
-    "section": "Course Details",
-    "text": "Course Details\n\n\n\nInstructor:\nJonathan Templin\n\n\nemail:\njonathan-templin@uiowa.edu\n\n\nCourse website:\nhttps://jonathantemplin.github.io/MissingDataMethods2025/\n\n\nCourse repo:\nhttps://github.com/jonathantemplin/MissingDataMethods2025\n\n\nCourse YouTube Playlist:\nhttps://www.youtube.com/watch?v=-YUmmA_akLM&list=PLSmMs4UgmSMgYbH3ryj-BTk7F7WWbgWPO\n\n\nOffice:\nS300A Lindquist Center\n\n\nOffice Phone:\n319-335-6429\n\n\nClassroom:\nS108 LC\n\n\nCourse Meeting Time:\nW 12:30pm-3:20pm\n\n\nCourse Office Hours:\nW 10:00am-12:00pm via Zoom at https://uiowa.zoom.us/my/jonathantemplinuiowa\n\n\nSyllabus:\nhttps://jonathantemplin.github.io/MissingDataMethods2025/s25mdm_syllabus.html"
-  },
-  {
-    "objectID": "index.html#current-assignments",
-    "href": "index.html#current-assignments",
-    "title": "Multilevel Measurement Models Workshop (Summer 2025; SMiP Summer School)",
-    "section": "Current Assignments",
-    "text": "Current Assignments\n\n\n\nAssignment\nDue Date\n\n\n\n\nHomework #5 (Available in ICON)\n06 May"
-  },
-  {
-    "objectID": "index.html#lecture-and-class-files-and-links",
-    "href": "index.html#lecture-and-class-files-and-links",
-    "title": "Multilevel Measurement Models Workshop (Summer 2025; SMiP Summer School)",
-    "section": "Lecture and Class Files and Links",
-    "text": "Lecture and Class Files and Links\n\n\n\n\nDate\nTopic\nMaterials\n\n\n22 Jan\nIntroduction to class\n\nSyllabus\nLecture Video\n\n\n\n29 Jan\nIntroduction to Missing Data\n\nSlides (HTML)\nSlides (PDF)\nR files\nLecture Video\n\n\n\n05 Feb\nTechnical Prerequisites\n\nSlides (PDF)\nR files\nLecture Video\n\n\n\n12 Feb\nMaximum Likelihood Estimation\n\nSlides (PDF)\nR files\nLecture Video\n\n\n\n19 Feb\nMLE with Missing Data (and lavaan)\n\nSlides (PDF)\nR files\nLecture Video\n\n\n\n26 Feb\nNo Class\n\n\n\n05 Mar\nlavaan and Maximum Likelihood Estimation with Missing Data (Chapter 3)\n\nHandout (html)\nR files\nLecture Video\n\n\n\n12 Mar\nIntroduction to Bayesian Methods\n\nSlides (pdf)\nR files\nLecture Video\n\n\n\n26 Mar and 02 Apr (See R files for additional materials)\nBayesian Estimation with Missing Data\n\nSlides (pdf)\nR files\nLecture Video (26 Mar)\nLecture Video (02 Apr)\n\n\n\n09 Apr\nMultiple Imputation\n\nSlides (pdf)\nR files\nLecture Video\n\n\n\n30 Apr\nMultilevel Missing Data and MNAR Processes\n\nMultilevel Missing Data Slides\nMNAR Processes Slides\nLecture Video\n\n\n\n07 May\nPsychometric Missing Data\n\nSlides (pdf)\nR files\nLecture Video"
-  },
-  {
     "objectID": "index.html#instructors-lesa-hoffman-and-jonathan-templin",
     "href": "index.html#instructors-lesa-hoffman-and-jonathan-templin",
     "title": "Multilevel Measurement Models Workshop (Summer 2025; SMiP Summer School)",

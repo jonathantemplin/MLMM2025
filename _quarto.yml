@@ -3,7 +3,6 @@ project:
   output-dir: docs
   resources: 
    - "_lectures"
-   - "_homeworks"
 
 website:
   title: "Multilevel Measurement Models Workshop (Summer 2025)"
